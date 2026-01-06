@@ -54,15 +54,14 @@ const Index = () => {
     }
   }, []);
 
-  const loadPlayers = async (token: string) => {
+  const loadPlayers = async (token?: string) => {
     try {
+      console.log('Загрузка игроков...');
       const response = await fetch('https://functions.poehali.dev/6013caed-cf4a-4a7f-8f68-0cc2d40ca477', {
         method: 'GET',
-        headers: {
-          'X-Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
       });
+      
+      console.log('Ответ получен:', response.status);
       
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
@@ -71,6 +70,7 @@ const Index = () => {
       }
       
       const data = await response.json();
+      console.log('Данные получены:', data);
       if (data.players) {
         const formattedPlayers: Player[] = data.players.map((p: any) => ({
           id: p.id.toString(),
