@@ -97,17 +97,41 @@ const AdminEventsTab = ({ authToken }: AdminEventsTabProps) => {
   const handleTogglePlayer = (teamIndex: number, playerId: number) => {
     setTeams(prev => {
       const newTeams = [...prev];
-      const otherTeamIndex = teamIndex === 0 ? 1 : 0;
       
       if (newTeams[teamIndex].players.includes(playerId)) {
         newTeams[teamIndex].players = newTeams[teamIndex].players.filter(id => id !== playerId);
       } else {
-        newTeams[otherTeamIndex].players = newTeams[otherTeamIndex].players.filter(id => id !== playerId);
+        newTeams.forEach((team, idx) => {
+          if (idx !== teamIndex) {
+            team.players = team.players.filter(id => id !== playerId);
+          }
+        });
         newTeams[teamIndex].players.push(playerId);
       }
       
       return newTeams;
     });
+  };
+
+  const addTeam = () => {
+    const teamNumber = teams.length + 1;
+    const colors = ['#FF6B00', '#00A8FF', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#06B6D4', '#EF4444'];
+    const newTeam: Team = {
+      name: `Команда ${teamNumber}`,
+      color: colors[teams.length % colors.length],
+      players: [],
+    };
+    setTeams([...teams, newTeam]);
+    toast.success('Команда добавлена');
+  };
+
+  const removeTeam = (teamIndex: number) => {
+    if (teams.length <= 2) {
+      toast.error('Минимум 2 команды');
+      return;
+    }
+    setTeams(teams.filter((_, idx) => idx !== teamIndex));
+    toast.success('Команда удалена');
   };
 
   const createGame = async () => {
@@ -116,8 +140,9 @@ const AdminEventsTab = ({ authToken }: AdminEventsTabProps) => {
       return;
     }
 
-    if (teams[0].players.length === 0 || teams[1].players.length === 0) {
-      toast.error('Добавьте игроков в обе команды');
+    const emptyTeams = teams.filter(t => t.players.length === 0);
+    if (emptyTeams.length > 0) {
+      toast.error('Добавьте игроков во все команды');
       return;
     }
 
@@ -140,6 +165,7 @@ const AdminEventsTab = ({ authToken }: AdminEventsTabProps) => {
           { name: 'Команда 2', color: '#00A8FF', players: [] },
         ]);
         loadGames();
+        loadPlayers();
       } else {
         const data = await response.json();
         toast.error(data.error || 'Ошибка создания игры');
@@ -279,6 +305,7 @@ const AdminEventsTab = ({ authToken }: AdminEventsTabProps) => {
                     setTeams(newTeams);
                   }}
                   placeholder="Название команды"
+                  className="flex-1"
                 />
                 <Input
                   type="color"
@@ -290,6 +317,15 @@ const AdminEventsTab = ({ authToken }: AdminEventsTabProps) => {
                   }}
                   className="w-20"
                 />
+                {teams.length > 2 && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => removeTeam(teamIndex)}
+                  >
+                    <Icon name="X" size={18} />
+                  </Button>
+                )}
               </div>
 
               <div className="ml-9 space-y-2 max-h-40 overflow-y-auto border rounded p-2">
@@ -306,10 +342,16 @@ const AdminEventsTab = ({ authToken }: AdminEventsTabProps) => {
             </div>
           ))}
 
-          <Button onClick={createGame} className="w-full" disabled={loading}>
-            <Icon name="Plus" size={18} className="mr-2" />
-            Создать игру
-          </Button>
+          <div className="flex gap-3">
+            <Button onClick={addTeam} variant="outline" className="flex-1">
+              <Icon name="PlusCircle" size={18} className="mr-2" />
+              Добавить команду
+            </Button>
+            <Button onClick={createGame} className="flex-1" disabled={loading}>
+              <Icon name="Plus" size={18} className="mr-2" />
+              Создать игру
+            </Button>
+          </div>
         </CardContent>
       </Card>
 

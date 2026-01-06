@@ -66,16 +66,16 @@ def handler(event: dict, context) -> dict:
                 cur.execute(
                     """
                     SELECT 
-                        p.id, 
+                        u.id, 
                         u.name, 
                         u.email, 
                         u.avatar,
-                        p.points, 
-                        p.wins, 
-                        p.losses
-                    FROM t_p28902192_strikbal_rating_app.players p
-                    JOIN t_p28902192_strikbal_rating_app.users u ON p.user_id = u.id
-                    ORDER BY p.points DESC
+                        COALESCE(p.points, 0) as points, 
+                        COALESCE(p.wins, 0) as wins, 
+                        COALESCE(p.losses, 0) as losses
+                    FROM t_p28902192_strikbal_rating_app.users u
+                    LEFT JOIN t_p28902192_strikbal_rating_app.players p ON p.user_id = u.id
+                    ORDER BY COALESCE(p.points, 0) DESC
                     """
                 )
                 players = cur.fetchall()
