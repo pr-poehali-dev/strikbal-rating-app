@@ -408,30 +408,34 @@ const ProfileTab = ({ currentPlayer }: ProfileTabProps) => {
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
             {[
-              { points: 5000, icon: '🐺', title: 'Волк', locked: displayData.points < 5000 },
+              { points: 5000, icon: 'https://cdn.poehali.dev/files/1344ab0f-f5b2-4a69-b71b-ac2b87e8aeb5_35beca51-5ad3-4002-8ac5-6c18ba8c6adf (2).png', title: 'Волк', locked: displayData.points < 5000, isImage: true },
               {
                 points: 10000,
                 icon: '🦈',
                 title: 'Акула',
                 locked: displayData.points < 10000,
+                isImage: false,
               },
               {
                 points: 15000,
                 icon: '🐉',
                 title: 'Дракон',
                 locked: displayData.points < 15000,
+                isImage: false,
               },
               {
                 points: 20000,
                 icon: '💀',
                 title: 'Повелитель',
                 locked: displayData.points < 20000,
+                isImage: false,
               },
               {
                 points: 25000,
                 icon: '👑',
                 title: 'Легенда',
                 locked: displayData.points < 25000,
+                isImage: false,
               },
             ].map(achievement => (
               <Card
@@ -440,7 +444,15 @@ const ProfileTab = ({ currentPlayer }: ProfileTabProps) => {
               >
                 <CardContent className="pt-4 md:pt-6">
                   <div className="flex items-center gap-3 md:gap-4">
-                    <span className="text-3xl md:text-5xl flex-shrink-0">{achievement.icon}</span>
+                    {achievement.isImage ? (
+                      <img 
+                        src={achievement.icon} 
+                        alt={achievement.title}
+                        className="w-12 h-12 md:w-16 md:h-16 object-contain flex-shrink-0"
+                      />
+                    ) : (
+                      <span className="text-3xl md:text-5xl flex-shrink-0">{achievement.icon}</span>
+                    )}
                     <div className="flex-1 min-w-0">
                       <p className="font-bold text-base md:text-lg">{achievement.title}</p>
                       <p className="text-xs md:text-sm text-muted-foreground">
