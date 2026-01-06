@@ -40,9 +40,10 @@ const ProfileTab = ({ currentPlayer }: ProfileTabProps) => {
     reader.onloadend = async () => {
       try {
         const base64 = reader.result as string;
-        const token = localStorage.getItem('authToken');
+        const token = localStorage.getItem('auth_token');
         
         console.log('Отправка запроса на загрузку аватара...');
+        console.log('Token:', token ? `${token.substring(0, 20)}...` : 'NOT FOUND');
         
         const response = await fetch('https://functions.poehali.dev/6013caed-cf4a-4a7f-8f68-0cc2d40ca477', {
           method: 'POST',
