@@ -411,10 +411,10 @@ const ProfileTab = ({ currentPlayer }: ProfileTabProps) => {
               { points: 5000, icon: 'https://cdn.poehali.dev/files/1344ab0f-f5b2-4a69-b71b-ac2b87e8aeb5_35beca51-5ad3-4002-8ac5-6c18ba8c6adf (2).png', title: 'Волк', locked: displayData.points < 5000, isImage: true },
               {
                 points: 10000,
-                icon: '🦈',
+                icon: 'https://cdn.poehali.dev/files/59481d80-53be-4095-9ec1-6c4e9b9cdb9e_937ccb99-6c9b-44a9-b471-1609d16a899c (1).png',
                 title: 'Акула',
                 locked: displayData.points < 10000,
-                isImage: false,
+                isImage: true,
               },
               {
                 points: 15000,
