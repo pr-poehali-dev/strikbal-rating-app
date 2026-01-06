@@ -9,6 +9,20 @@
         "error": "Требуется авторизация"
       },
       "bodyMatcher": "partial"
+    },
+    {
+      "name": "Загрузка аватара без токена",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "player_id": 1,
+        "avatar_base64": "test"
+      },
+      "expectedStatus": 401,
+      "expectedBody": {
+        "error": "Требуется авторизация"
+      },
+      "bodyMatcher": "partial"
     }
   ]
 }

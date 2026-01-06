@@ -33,11 +33,13 @@ const ProfileTab = ({ currentPlayer }: ProfileTabProps) => {
       const reader = new FileReader();
       reader.onloadend = async () => {
         const base64 = reader.result as string;
+        const token = localStorage.getItem('authToken');
         
-        const response = await fetch('https://functions.poehali.dev/bbb53eb5-28d8-4ba0-9e70-dfa59e7450a6', {
+        const response = await fetch('https://functions.poehali.dev/6013caed-cf4a-4a7f-8f68-0cc2d40ca477', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
           },
           body: JSON.stringify({
             player_id: currentPlayer.id,
