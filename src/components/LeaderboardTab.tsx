@@ -1,9 +1,11 @@
+import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import Icon from '@/components/ui/icon';
 import { Player, getRankIcon, getRankTitle } from './types';
+import PlayerProfileView from './PlayerProfileView';
 
 type LeaderboardTabProps = {
   players: Player[];
@@ -11,6 +13,16 @@ type LeaderboardTabProps = {
 
 const LeaderboardTab = ({ players }: LeaderboardTabProps) => {
   const sortedPlayers = [...players].sort((a, b) => b.points - a.points);
+  const [selectedPlayerId, setSelectedPlayerId] = useState<string | null>(null);
+
+  if (selectedPlayerId) {
+    return (
+      <PlayerProfileView 
+        playerId={selectedPlayerId} 
+        onClose={() => setSelectedPlayerId(null)} 
+      />
+    );
+  }
 
   return (
     <Card>
@@ -35,7 +47,11 @@ const LeaderboardTab = ({ players }: LeaderboardTabProps) => {
           </TableHeader>
           <TableBody>
             {sortedPlayers.map((player, index) => (
-              <TableRow key={player.id} className={index === 0 ? 'bg-primary/5' : ''}>
+              <TableRow 
+                key={player.id} 
+                className={`${index === 0 ? 'bg-primary/5' : ''} cursor-pointer hover:bg-muted/50 transition-colors`}
+                onClick={() => setSelectedPlayerId(player.id)}
+              >
                 <TableCell className="font-bold">
                   {index === 0 && <Icon name="Crown" size={20} className="text-yellow-500 inline mr-1" />}
                   #{index + 1}

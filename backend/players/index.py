@@ -175,6 +175,111 @@ def handler(event: dict, context) -> dict:
 
         dsn = os.environ['DATABASE_URL']
         
+        if action == 'player':
+            player_id = query_params.get('id')
+            if not player_id:
+                return {
+                    'statusCode': 400,
+                    'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                    'body': json.dumps({'error': 'Требуется ID игрока'}),
+                    'isBase64Encoded': False
+                }
+            
+            with psycopg2.connect(dsn) as conn:
+                with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                    cur.execute(
+                        """
+                        SELECT u.id, u.name, u.avatar, 
+                               COALESCE(p.points, 0) as points, 
+                               COALESCE(p.wins, 0) as wins, 
+                               COALESCE(p.losses, 0) as losses,
+                               p.id as player_id
+                        FROM t_p28902192_strikbal_rating_app.users u
+                        LEFT JOIN t_p28902192_strikbal_rating_app.players p ON u.id = p.user_id
+                        WHERE u.id = %s
+                        """,
+                        (player_id,)
+                    )
+                    user_row = cur.fetchone()
+                    
+                    if not user_row:
+                        return {
+                            'statusCode': 404,
+                            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                            'body': json.dumps({'error': 'Игрок не найден'}),
+                            'isBase64Encoded': False
+                        }
+                    
+                    user_data = dict(user_row)
+                    player_db_id = user_row['player_id']
+                    
+                    if player_db_id:
+                        cur.execute(
+                            """
+                            SELECT COUNT(*) + 1 as rank
+                            FROM t_p28902192_strikbal_rating_app.players
+                            WHERE points > (SELECT points FROM t_p28902192_strikbal_rating_app.players WHERE id = %s)
+                            """,
+                            (player_db_id,)
+                        )
+                        rank_row = cur.fetchone()
+                        user_data['rank'] = rank_row['rank'] if rank_row else None
+                        
+                        cur.execute(
+                            """
+                            SELECT id, name, points, completed, created_at
+                            FROM t_p28902192_strikbal_rating_app.tasks
+                            WHERE player_id = %s AND completed = true
+                            ORDER BY created_at DESC
+                            """,
+                            (player_db_id,)
+                        )
+                        
+                        tasks = [dict(row) for row in cur.fetchall()]
+                        for task in tasks:
+                            if task.get('created_at'):
+                                task['created_at'] = task['created_at'].isoformat()
+                        user_data['completed_tasks'] = tasks
+                        
+                        cur.execute(
+                            """
+                            SELECT 
+                                g.id,
+                                g.name,
+                                g.created_at,
+                                g.winner_team_id,
+                                t.id as team_id,
+                                t.name as team_name,
+                                t.color as team_color,
+                                CASE WHEN g.winner_team_id = t.id THEN true ELSE false END as won
+                            FROM t_p28902192_strikbal_rating_app.games g
+                            JOIN t_p28902192_strikbal_rating_app.teams t ON g.id = t.game_id
+                            JOIN t_p28902192_strikbal_rating_app.team_players tp ON t.id = tp.team_id
+                            WHERE tp.player_id = %s AND g.status = 'completed'
+                            ORDER BY g.created_at DESC
+                            """,
+                            (player_db_id,)
+                        )
+                        
+                        games = [dict(row) for row in cur.fetchall()]
+                        for game in games:
+                            if game.get('created_at'):
+                                game['created_at'] = game['created_at'].isoformat()
+                        user_data['games_history'] = games
+                    else:
+                        user_data['rank'] = None
+                        user_data['completed_tasks'] = []
+                        user_data['games_history'] = []
+                    
+                    del user_data['player_id']
+                    
+                    return {
+                        'statusCode': 200,
+                        'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                        'body': json.dumps(user_data, default=str),
+                        'isBase64Encoded': False
+                    }
+        
         if action == 'profile':
             with psycopg2.connect(dsn) as conn:
                 with conn.cursor(cursor_factory=RealDictCursor) as cur:
