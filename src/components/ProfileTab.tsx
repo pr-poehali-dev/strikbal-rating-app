@@ -48,12 +48,10 @@ const ProfileTab = ({ currentPlayer }: ProfileTabProps) => {
   const fetchProfile = async () => {
     try {
       const token = localStorage.getItem('auth_token');
-      const response = await fetch(
-        'https://functions.poehali.dev/6013caed-cf4a-4a7f-8f68-0cc2d40ca477?action=profile',
-        {
-          method: 'GET',
-        }
-      );
+      const url = `https://functions.poehali.dev/6013caed-cf4a-4a7f-8f68-0cc2d40ca477?action=profile${token ? `&token=${token}` : ''}`;
+      const response = await fetch(url, {
+        method: 'GET',
+      });
 
       if (response.ok) {
         const data = await response.json();

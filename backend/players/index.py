@@ -168,6 +168,9 @@ def handler(event: dict, context) -> dict:
             auth_header = headers.get('authorization', headers.get('Authorization', ''))
         token = auth_header.replace('Bearer ', '').strip() if auth_header else ''
         
+        if not token:
+            token = query_params.get('token', '')
+        
         print(f"Token extracted: {token[:20] if token else 'EMPTY'}")
 
         dsn = os.environ['DATABASE_URL']

@@ -40,10 +40,15 @@ def handler(event: dict, context) -> dict:
 
     try:
         headers = event.get('headers', {})
+        query_params = event.get('queryStringParameters', {}) or {}
+        
         auth_header = headers.get('x-authorization', headers.get('X-Authorization', ''))
         if not auth_header:
             auth_header = headers.get('authorization', headers.get('Authorization', ''))
-        token = auth_header.replace('Bearer ', '').strip()
+        token = auth_header.replace('Bearer ', '').strip() if auth_header else ''
+        
+        if not token:
+            token = query_params.get('token', '')
         
         if not token:
             return {

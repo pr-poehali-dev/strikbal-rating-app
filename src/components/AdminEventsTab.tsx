@@ -31,7 +31,8 @@ const AdminEventsTab = ({ authToken }: AdminEventsTabProps) => {
 
   const loadPlayers = async () => {
     try {
-      const response = await fetch('https://functions.poehali.dev/6013caed-cf4a-4a7f-8f68-0cc2d40ca477', {
+      const url = `https://functions.poehali.dev/6013caed-cf4a-4a7f-8f68-0cc2d40ca477${authToken ? `?token=${authToken}` : ''}`;
+      const response = await fetch(url, {
         method: 'GET',
       });
       
@@ -52,7 +53,8 @@ const AdminEventsTab = ({ authToken }: AdminEventsTabProps) => {
 
   const loadGames = async () => {
     try {
-      const response = await fetch('https://functions.poehali.dev/5d6c5d79-2e2f-4d81-9cba-09e58c1435d2', {
+      const url = `https://functions.poehali.dev/5d6c5d79-2e2f-4d81-9cba-09e58c1435d2${authToken ? `?token=${authToken}` : ''}`;
+      const response = await fetch(url, {
         method: 'GET',
       });
       
@@ -73,7 +75,8 @@ const AdminEventsTab = ({ authToken }: AdminEventsTabProps) => {
 
   const loadTasks = async () => {
     try {
-      const response = await fetch('https://functions.poehali.dev/f3163ce6-2de5-435f-989d-d7026066ddb1', {
+      const url = `https://functions.poehali.dev/f3163ce6-2de5-435f-989d-d7026066ddb1${authToken ? `?token=${authToken}` : ''}`;
+      const response = await fetch(url, {
         method: 'GET',
       });
       
