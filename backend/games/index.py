@@ -32,7 +32,7 @@ def handler(event: dict, context) -> dict:
             'headers': {
                 'Access-Control-Allow-Origin': '*',
                 'Access-Control-Allow-Methods': 'GET, POST, PUT, OPTIONS',
-                'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+                'Access-Control-Allow-Headers': 'Content-Type, X-Authorization'
             },
             'body': '',
             'isBase64Encoded': False
@@ -40,7 +40,9 @@ def handler(event: dict, context) -> dict:
 
     try:
         headers = event.get('headers', {})
-        auth_header = headers.get('authorization', headers.get('Authorization', ''))
+        auth_header = headers.get('x-authorization', headers.get('X-Authorization', ''))
+        if not auth_header:
+            auth_header = headers.get('authorization', headers.get('Authorization', ''))
         token = auth_header.replace('Bearer ', '').strip()
         dsn = os.environ['DATABASE_URL']
 
