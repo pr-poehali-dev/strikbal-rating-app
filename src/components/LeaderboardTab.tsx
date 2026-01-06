@@ -83,6 +83,20 @@ const LeaderboardTab = ({ players }: LeaderboardTabProps) => {
                           <AvatarFallback>{player.name.charAt(0)}</AvatarFallback>
                         </Avatar>
                       </div>
+                    ) : index === 2 ? (
+                      <div className="relative">
+                        <div className="absolute -inset-2 animate-bronze-flame">
+                          <div className="absolute inset-0 rounded-full bg-gradient-to-t from-amber-700 via-amber-500 to-yellow-300 opacity-60 blur-md animate-bronze-glow"></div>
+                          <div className="absolute left-1 top-0 w-1.5 h-2 bg-gradient-to-t from-amber-800 via-amber-500 to-yellow-200 rounded-full blur-sm animate-bronze-flicker-1"></div>
+                          <div className="absolute right-1 top-1 w-1.5 h-2.5 bg-gradient-to-t from-amber-900 via-amber-600 to-yellow-300 rounded-full blur-sm animate-bronze-flicker-2"></div>
+                          <div className="absolute bottom-0 left-0 w-1.5 h-2 bg-gradient-to-t from-amber-800 via-amber-500 to-yellow-200 rounded-full blur-sm animate-bronze-flicker-3"></div>
+                          <div className="absolute bottom-1 right-0 w-1.5 h-2.5 bg-gradient-to-t from-amber-900 via-amber-600 to-yellow-300 rounded-full blur-sm animate-bronze-flicker-1"></div>
+                        </div>
+                        <Avatar className="relative z-10 ring-2 ring-amber-600">
+                          <AvatarImage src={player.avatar} />
+                          <AvatarFallback>{player.name.charAt(0)}</AvatarFallback>
+                        </Avatar>
+                      </div>
                     ) : (
                       <Avatar>
                         <AvatarImage src={player.avatar} />

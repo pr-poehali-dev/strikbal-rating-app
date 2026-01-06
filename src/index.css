@@ -226,4 +226,96 @@
   .animate-flicker-3 {
     animation: flicker-3 1.8s ease-in-out infinite;
   }
+
+  @keyframes bronze-flame {
+    0%,
+    100% {
+      transform: scale(1) rotate(0deg);
+      opacity: 0.85;
+    }
+    50% {
+      transform: scale(1.08) rotate(-3deg);
+      opacity: 0.75;
+    }
+  }
+
+  .animate-bronze-flame {
+    animation: bronze-flame 2s ease-in-out infinite;
+  }
+
+  @keyframes bronze-glow {
+    0%,
+    100% {
+      opacity: 0.6;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.8;
+      transform: scale(1.1);
+    }
+  }
+
+  .animate-bronze-glow {
+    animation: bronze-glow 2.5s ease-in-out infinite;
+  }
+
+  @keyframes bronze-flicker-1 {
+    0%,
+    100% {
+      transform: scaleY(1) translateY(0);
+      opacity: 0.9;
+    }
+    30% {
+      transform: scaleY(1.2) translateY(-2px);
+      opacity: 1;
+    }
+    60% {
+      transform: scaleY(0.95) translateY(1px);
+      opacity: 0.85;
+    }
+  }
+
+  @keyframes bronze-flicker-2 {
+    0%,
+    100% {
+      transform: scaleY(1) translateY(0);
+      opacity: 1;
+    }
+    25% {
+      transform: scaleY(1.3) translateY(-3px);
+      opacity: 0.9;
+    }
+    75% {
+      transform: scaleY(0.9) translateY(1px);
+      opacity: 0.95;
+    }
+  }
+
+  @keyframes bronze-flicker-3 {
+    0%,
+    100% {
+      transform: scaleY(1) translateY(0);
+      opacity: 0.95;
+    }
+    40% {
+      transform: scaleY(1.25) translateY(-2px);
+      opacity: 1;
+    }
+    80% {
+      transform: scaleY(1.1) translateY(-1px);
+      opacity: 0.9;
+    }
+  }
+
+  .animate-bronze-flicker-1 {
+    animation: bronze-flicker-1 1.4s ease-in-out infinite;
+  }
+
+  .animate-bronze-flicker-2 {
+    animation: bronze-flicker-2 1.7s ease-in-out infinite;
+  }
+
+  .animate-bronze-flicker-3 {
+    animation: bronze-flicker-3 2s ease-in-out infinite;
+  }
 }
