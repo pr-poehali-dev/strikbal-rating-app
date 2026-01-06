@@ -44,10 +44,14 @@ def handler(event: dict, context) -> dict:
     if method == 'POST':
         try:
             headers = event.get('headers', {})
+            print(f"Headers received: {headers}")
+            
             auth_header = headers.get('x-authorization', headers.get('X-Authorization', ''))
             if not auth_header:
                 auth_header = headers.get('authorization', headers.get('Authorization', ''))
-            token = auth_header.replace('Bearer ', '').strip()
+            
+            print(f"Auth header: {auth_header}")
+            token = auth_header.replace('Bearer ', '').replace('bearer ', '').strip() if auth_header else ''
 
             if not token:
                 return {
@@ -69,11 +73,13 @@ def handler(event: dict, context) -> dict:
                     'isBase64Encoded': False
                 }
 
+            print(f"Token from request: {token[:20]}...")
+
             with psycopg2.connect(dsn) as conn:
                 with conn.cursor(cursor_factory=RealDictCursor) as cur:
                     cur.execute(
                         """
-                        SELECT u.id 
+                        SELECT u.id, u.name
                         FROM t_p28902192_strikbal_rating_app.sessions s
                         JOIN t_p28902192_strikbal_rating_app.users u ON s.user_id = u.id
                         WHERE s.token = %s AND s.expires_at > NOW()
@@ -81,15 +87,18 @@ def handler(event: dict, context) -> dict:
                         (token,)
                     )
                     result = cur.fetchone()
+                    print(f"Database query result: {result}")
+                    
                     if not result:
                         return {
                             'statusCode': 403,
                             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                            'body': json.dumps({'error': 'Нет доступа'}),
+                            'body': json.dumps({'error': 'Нет доступа - токен не найден или истёк'}),
                             'isBase64Encoded': False
                         }
                     
                     player_id = result['id']
+                    print(f"User found: {result['name']} (ID: {player_id})")
 
             if avatar_base64.startswith('data:image'):
                 avatar_base64 = avatar_base64.split(',')[1]
