@@ -56,10 +56,21 @@ const Index = () => {
   const loadPlayers = async (token: string) => {
     try {
       const response = await fetch('https://functions.poehali.dev/6013caed-cf4a-4a7f-8f68-0cc2d40ca477', {
-        headers: { 'X-Authorization': `Bearer ${token}` },
+        method: 'GET',
+        headers: {
+          'X-Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
       });
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        console.error('Backend error:', response.status, errorData);
+        return;
+      }
+      
       const data = await response.json();
-      if (response.ok && data.players) {
+      if (data.players) {
         const formattedPlayers: Player[] = data.players.map((p: any) => ({
           id: p.id.toString(),
           name: p.name,
