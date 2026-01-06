@@ -52,10 +52,6 @@ const ProfileTab = ({ currentPlayer }: ProfileTabProps) => {
         'https://functions.poehali.dev/6013caed-cf4a-4a7f-8f68-0cc2d40ca477?action=profile',
         {
           method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Authorization': `Bearer ${token}`,
-          },
         }
       );
 

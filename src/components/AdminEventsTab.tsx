@@ -33,10 +33,6 @@ const AdminEventsTab = ({ authToken }: AdminEventsTabProps) => {
     try {
       const response = await fetch('https://functions.poehali.dev/6013caed-cf4a-4a7f-8f68-0cc2d40ca477', {
         method: 'GET',
-        headers: {
-          'X-Authorization': `Bearer ${authToken}`,
-          'Content-Type': 'application/json',
-        },
       });
       
       if (!response.ok) {
@@ -58,10 +54,6 @@ const AdminEventsTab = ({ authToken }: AdminEventsTabProps) => {
     try {
       const response = await fetch('https://functions.poehali.dev/5d6c5d79-2e2f-4d81-9cba-09e58c1435d2', {
         method: 'GET',
-        headers: {
-          'X-Authorization': `Bearer ${authToken}`,
-          'Content-Type': 'application/json',
-        },
       });
       
       if (!response.ok) {
@@ -83,10 +75,6 @@ const AdminEventsTab = ({ authToken }: AdminEventsTabProps) => {
     try {
       const response = await fetch('https://functions.poehali.dev/f3163ce6-2de5-435f-989d-d7026066ddb1', {
         method: 'GET',
-        headers: {
-          'X-Authorization': `Bearer ${authToken}`,
-          'Content-Type': 'application/json',
-        },
       });
       
       if (!response.ok) {
