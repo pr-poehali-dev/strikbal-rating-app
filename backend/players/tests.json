@@ -4,9 +4,9 @@
       "name": "Получение списка игроков без токена",
       "method": "GET",
       "path": "/",
-      "expectedStatus": 403,
+      "expectedStatus": 401,
       "expectedBody": {
-        "error": "string"
+        "error": "Требуется авторизация"
       },
       "bodyMatcher": "partial"
     }

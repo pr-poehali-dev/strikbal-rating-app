@@ -23,7 +23,7 @@ def verify_admin(token: str, dsn: str) -> bool:
             return result['is_admin'] if result else False
 
 def handler(event: dict, context) -> dict:
-    '''API для получения списка всех игроков (только для админа)'''
+    '''API для получения списка всех игроков (админ - полный доступ, обычный - рейтинг)'''
     method = event.get('httpMethod', 'GET')
 
     if method == 'OPTIONS':
@@ -48,36 +48,56 @@ def handler(event: dict, context) -> dict:
 
     try:
         headers = event.get('headers', {})
-        auth_header = headers.get('authorization', headers.get('Authorization', ''))
+        auth_header = headers.get('x-authorization', headers.get('X-Authorization', ''))
+        if not auth_header:
+            auth_header = headers.get('authorization', headers.get('Authorization', ''))
         token = auth_header.replace('Bearer ', '').strip()
 
-        dsn = os.environ['DATABASE_URL']
-
-        if not verify_admin(token, dsn):
+        if not token:
             return {
-                'statusCode': 403,
+                'statusCode': 401,
                 'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                'body': json.dumps({'error': 'Доступ запрещен. Требуются права администратора'}),
+                'body': json.dumps({'error': 'Требуется авторизация'}),
                 'isBase64Encoded': False
             }
 
+        dsn = os.environ['DATABASE_URL']
+        is_admin = verify_admin(token, dsn)
+
         with psycopg2.connect(dsn) as conn:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
-                cur.execute(
-                    """
-                    SELECT 
-                        u.id, 
-                        u.name, 
-                        u.email, 
-                        u.avatar,
-                        COALESCE(p.points, 0) as points, 
-                        COALESCE(p.wins, 0) as wins, 
-                        COALESCE(p.losses, 0) as losses
-                    FROM t_p28902192_strikbal_rating_app.users u
-                    LEFT JOIN t_p28902192_strikbal_rating_app.players p ON p.user_id = u.id
-                    ORDER BY COALESCE(p.points, 0) DESC
-                    """
-                )
+                if is_admin:
+                    cur.execute(
+                        """
+                        SELECT 
+                            u.id, 
+                            u.name, 
+                            u.email, 
+                            u.avatar,
+                            COALESCE(p.points, 0) as points, 
+                            COALESCE(p.wins, 0) as wins, 
+                            COALESCE(p.losses, 0) as losses
+                        FROM t_p28902192_strikbal_rating_app.users u
+                        LEFT JOIN t_p28902192_strikbal_rating_app.players p ON p.user_id = u.id
+                        ORDER BY COALESCE(p.points, 0) DESC, u.name ASC
+                        """
+                    )
+                else:
+                    cur.execute(
+                        """
+                        SELECT 
+                            u.id, 
+                            u.name, 
+                            u.avatar,
+                            COALESCE(p.points, 0) as points, 
+                            COALESCE(p.wins, 0) as wins, 
+                            COALESCE(p.losses, 0) as losses
+                        FROM t_p28902192_strikbal_rating_app.users u
+                        LEFT JOIN t_p28902192_strikbal_rating_app.players p ON p.user_id = u.id
+                        ORDER BY COALESCE(p.points, 0) DESC, u.name ASC
+                        """
+                    )
+                
                 players = cur.fetchall()
 
                 return {
