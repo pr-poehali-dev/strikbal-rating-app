@@ -29,6 +29,14 @@ type ProfileData = {
     completed: boolean;
     created_at: string;
   }>;
+  games_history: Array<{
+    id: number;
+    name: string;
+    created_at: string;
+    team_name: string;
+    team_color: string;
+    won: boolean;
+  }>;
 };
 
 const ProfileTab = ({ currentPlayer }: ProfileTabProps) => {
@@ -248,12 +256,62 @@ const ProfileTab = ({ currentPlayer }: ProfileTabProps) => {
 
         <Separator />
 
+        {profileData && profileData.games_history && profileData.games_history.length > 0 && (
+          <>
+            <div className="space-y-4">
+              <h3 className="text-xl font-semibold flex items-center gap-2">
+                <Icon name="Swords" size={22} />
+                История игр
+              </h3>
+              <div className="space-y-2">
+                {profileData.games_history.map((game) => (
+                  <Card key={game.id} className={game.won ? 'border-green-500' : 'border-red-500'}>
+                    <CardContent className="pt-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div
+                            className="w-4 h-4 rounded-full"
+                            style={{ backgroundColor: game.team_color }}
+                          />
+                          <div>
+                            <p className="font-semibold">{game.name}</p>
+                            <p className="text-sm text-muted-foreground">
+                              Команда: {game.team_name}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {new Date(game.created_at).toLocaleDateString('ru-RU')}
+                            </p>
+                          </div>
+                        </div>
+                        <Badge variant={game.won ? 'default' : 'secondary'} className={game.won ? 'bg-green-600' : 'bg-red-600'}>
+                          {game.won ? (
+                            <>
+                              <Icon name="Trophy" size={14} className="mr-1" />
+                              Победа
+                            </>
+                          ) : (
+                            <>
+                              <Icon name="X" size={14} className="mr-1" />
+                              Поражение
+                            </>
+                          )}
+                        </Badge>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+            <Separator />
+          </>
+        )}
+
         {profileData && profileData.completed_tasks.length > 0 && (
           <>
             <div className="space-y-4">
               <h3 className="text-xl font-semibold flex items-center gap-2">
                 <Icon name="CheckCircle" size={22} />
-                Выполненные задачи
+                Дополнительные задания
               </h3>
               <div className="space-y-2">
                 {profileData.completed_tasks.map((task) => (

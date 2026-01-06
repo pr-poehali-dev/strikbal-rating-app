@@ -251,9 +251,36 @@ def handler(event: dict, context) -> dict:
                             if task.get('created_at'):
                                 task['created_at'] = task['created_at'].isoformat()
                         user_data['completed_tasks'] = tasks
+                        
+                        cur.execute(
+                            """
+                            SELECT 
+                                g.id,
+                                g.name,
+                                g.created_at,
+                                g.winner_team_id,
+                                t.id as team_id,
+                                t.name as team_name,
+                                t.color as team_color,
+                                CASE WHEN g.winner_team_id = t.id THEN true ELSE false END as won
+                            FROM t_p28902192_strikbal_rating_app.games g
+                            JOIN t_p28902192_strikbal_rating_app.teams t ON g.id = t.game_id
+                            JOIN t_p28902192_strikbal_rating_app.team_players tp ON t.id = tp.team_id
+                            WHERE tp.player_id = %s AND g.status = 'completed'
+                            ORDER BY g.created_at DESC
+                            """,
+                            (player_id,)
+                        )
+                        
+                        games = [dict(row) for row in cur.fetchall()]
+                        for game in games:
+                            if game.get('created_at'):
+                                game['created_at'] = game['created_at'].isoformat()
+                        user_data['games_history'] = games
                     else:
                         user_data['rank'] = None
                         user_data['completed_tasks'] = []
+                        user_data['games_history'] = []
                     
                     del user_data['player_id']
                     
