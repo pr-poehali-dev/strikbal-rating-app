@@ -59,14 +59,13 @@ def handler(event: dict, context) -> dict:
 
             dsn = os.environ['DATABASE_URL']
             body = json.loads(event.get('body', '{}'))
-            player_id = body.get('player_id')
             avatar_base64 = body.get('avatar_base64', '')
 
-            if not player_id or not avatar_base64:
+            if not avatar_base64:
                 return {
                     'statusCode': 400,
                     'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                    'body': json.dumps({'error': 'Требуется player_id и avatar_base64'}),
+                    'body': json.dumps({'error': 'Требуется avatar_base64'}),
                     'isBase64Encoded': False
                 }
 
@@ -77,9 +76,9 @@ def handler(event: dict, context) -> dict:
                         SELECT u.id 
                         FROM t_p28902192_strikbal_rating_app.sessions s
                         JOIN t_p28902192_strikbal_rating_app.users u ON s.user_id = u.id
-                        WHERE s.token = %s AND s.expires_at > NOW() AND u.id = %s
+                        WHERE s.token = %s AND s.expires_at > NOW()
                         """,
-                        (token, player_id)
+                        (token,)
                     )
                     result = cur.fetchone()
                     if not result:
@@ -89,6 +88,8 @@ def handler(event: dict, context) -> dict:
                             'body': json.dumps({'error': 'Нет доступа'}),
                             'isBase64Encoded': False
                         }
+                    
+                    player_id = result['id']
 
             if avatar_base64.startswith('data:image'):
                 avatar_base64 = avatar_base64.split(',')[1]

@@ -51,7 +51,6 @@ const ProfileTab = ({ currentPlayer }: ProfileTabProps) => {
             'Authorization': `Bearer ${token}`,
           },
           body: JSON.stringify({
-            player_id: currentPlayer.id,
             avatar_base64: base64,
           }),
         });

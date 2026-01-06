@@ -15,7 +15,6 @@
       "method": "POST",
       "path": "/",
       "body": {
-        "player_id": 1,
         "avatar_base64": "test"
       },
       "expectedStatus": 401,
