@@ -166,15 +166,9 @@ def handler(event: dict, context) -> dict:
         auth_header = headers.get('x-authorization', headers.get('X-Authorization', ''))
         if not auth_header:
             auth_header = headers.get('authorization', headers.get('Authorization', ''))
-        token = auth_header.replace('Bearer ', '').strip()
-
-        if not token:
-            return {
-                'statusCode': 401,
-                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                'body': json.dumps({'error': 'Требуется авторизация'}),
-                'isBase64Encoded': False
-            }
+        token = auth_header.replace('Bearer ', '').strip() if auth_header else ''
+        
+        print(f"Token extracted: {token[:20] if token else 'EMPTY'}")
 
         dsn = os.environ['DATABASE_URL']
         
@@ -267,7 +261,9 @@ def handler(event: dict, context) -> dict:
                         'isBase64Encoded': False
                     }
         
-        is_admin = verify_admin(token, dsn)
+        is_admin = verify_admin(token, dsn) if token else False
+        
+        print(f"Is admin: {is_admin}, token present: {bool(token)}")
 
         with psycopg2.connect(dsn) as conn:
             with conn.cursor(cursor_factory=RealDictCursor) as cur:
