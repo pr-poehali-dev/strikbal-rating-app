@@ -9,6 +9,7 @@ import LeaderboardTab from '@/components/LeaderboardTab';
 import EventsTab from '@/components/EventsTab';
 import ProfileTab from '@/components/ProfileTab';
 import AuthPage from '@/components/AuthPage';
+import AdminEventsTab from '@/components/AdminEventsTab';
 
 const Index = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -244,24 +245,28 @@ const Index = () => {
           </TabsContent>
 
           <TabsContent value="events" className="space-y-6">
-            <EventsTab
-              isAdmin={isAdmin}
-              players={players}
-              games={games}
-              tasks={tasks}
-              newGameName={newGameName}
-              setNewGameName={setNewGameName}
-              createGame={createGame}
-              finishGame={finishGame}
-              newTaskName={newTaskName}
-              setNewTaskName={setNewTaskName}
-              newTaskPoints={newTaskPoints}
-              setNewTaskPoints={setNewTaskPoints}
-              newTaskPlayer={newTaskPlayer}
-              setNewTaskPlayer={setNewTaskPlayer}
-              createTask={createTask}
-              completeTask={completeTask}
-            />
+            {isAdmin && authToken ? (
+              <AdminEventsTab authToken={authToken} />
+            ) : (
+              <EventsTab
+                isAdmin={isAdmin}
+                players={players}
+                games={games}
+                tasks={tasks}
+                newGameName={newGameName}
+                setNewGameName={setNewGameName}
+                createGame={createGame}
+                finishGame={finishGame}
+                newTaskName={newTaskName}
+                setNewTaskName={setNewTaskName}
+                newTaskPoints={newTaskPoints}
+                setNewTaskPoints={setNewTaskPoints}
+                newTaskPlayer={newTaskPlayer}
+                setNewTaskPlayer={setNewTaskPlayer}
+                createTask={createTask}
+                completeTask={completeTask}
+              />
+            )}
           </TabsContent>
 
           <TabsContent value="profile" className="space-y-6">

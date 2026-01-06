@@ -1,0 +1,14 @@
+{
+  "tests": [
+    {
+      "name": "Получение списка игроков без токена",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 403,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

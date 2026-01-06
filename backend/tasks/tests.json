@@ -1,0 +1,25 @@
+{
+  "tests": [
+    {
+      "name": "Получение задач без прав админа",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 403,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Создание задачи без данных",
+      "method": "POST",
+      "path": "/",
+      "body": {},
+      "expectedStatus": 403,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
