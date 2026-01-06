@@ -1,0 +1,32 @@
+{
+  "tests": [
+    {
+      "name": "Авторизация с пустыми полями",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "email": "",
+        "password": ""
+      },
+      "expectedStatus": 400,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Авторизация с неверными данными",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "email": "nonexistent@example.com",
+        "password": "wrongpassword"
+      },
+      "expectedStatus": 401,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

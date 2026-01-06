@@ -1,20 +1,79 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import { toast } from 'sonner';
 import { Player, Game, Task, Team, mockPlayers } from '@/components/types';
 import LeaderboardTab from '@/components/LeaderboardTab';
 import EventsTab from '@/components/EventsTab';
 import ProfileTab from '@/components/ProfileTab';
+import AuthPage from '@/components/AuthPage';
 
 const Index = () => {
-  const [isAdmin] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authToken, setAuthToken] = useState<string | null>(null);
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [activeTab, setActiveTab] = useState('leaderboard');
   const [players, setPlayers] = useState<Player[]>(mockPlayers);
   const [games, setGames] = useState<Game[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [currentPlayer] = useState(players[0]);
+  const [currentPlayer, setCurrentPlayer] = useState<Player | null>(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem('auth_token');
+    const user = localStorage.getItem('user');
+    if (token && user) {
+      const parsedUser = JSON.parse(user);
+      setAuthToken(token);
+      setCurrentUser(parsedUser);
+      setIsAdmin(parsedUser.isAdmin);
+      setIsAuthenticated(true);
+      if (parsedUser.player) {
+        setCurrentPlayer({
+          id: parsedUser.player.id.toString(),
+          name: parsedUser.name,
+          avatar: parsedUser.avatar || '',
+          points: parsedUser.player.points,
+          wins: parsedUser.player.wins,
+          losses: parsedUser.player.losses,
+        });
+      }
+    }
+  }, []);
+
+  const handleLogin = (token: string, user: any) => {
+    setAuthToken(token);
+    setCurrentUser(user);
+    setIsAdmin(user.isAdmin);
+    setIsAuthenticated(true);
+    if (user.player) {
+      setCurrentPlayer({
+        id: user.player.id.toString(),
+        name: user.name,
+        avatar: user.avatar || '',
+        points: user.player.points,
+        wins: user.player.wins,
+        losses: user.player.losses,
+      });
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('user');
+    setAuthToken(null);
+    setCurrentUser(null);
+    setIsAdmin(false);
+    setIsAuthenticated(false);
+    setCurrentPlayer(null);
+    toast.success('Вы вышли из системы');
+  };
+
+  if (!isAuthenticated) {
+    return <AuthPage onLogin={handleLogin} />;
+  }
 
   const [newGameName, setNewGameName] = useState('');
   const [selectedPlayers, setSelectedPlayers] = useState<string[]>([]);
@@ -152,12 +211,18 @@ const Index = () => {
             </h1>
             <p className="text-muted-foreground">Система рейтинга от Дмитрия Ильина</p>
           </div>
-          {isAdmin && (
-            <Badge variant="default" className="text-base px-4 py-2">
-              <Icon name="Shield" size={16} className="mr-2" />
-              Администратор
-            </Badge>
-          )}
+          <div className="flex items-center gap-3">
+            {isAdmin && (
+              <Badge variant="default" className="text-base px-4 py-2">
+                <Icon name="Shield" size={16} className="mr-2" />
+                Администратор
+              </Badge>
+            )}
+            <Button variant="outline" onClick={handleLogout}>
+              <Icon name="LogOut" size={16} className="mr-2" />
+              Выход
+            </Button>
+          </div>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -202,7 +267,7 @@ const Index = () => {
           </TabsContent>
 
           <TabsContent value="profile" className="space-y-6">
-            <ProfileTab currentPlayer={currentPlayer} />
+            {currentPlayer && <ProfileTab currentPlayer={currentPlayer} />}
           </TabsContent>
         </Tabs>
       </div>

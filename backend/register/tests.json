@@ -1,0 +1,56 @@
+{
+  "tests": [
+    {
+      "name": "Успешная регистрация",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "email": "test2@example.com",
+        "password": "password123",
+        "name": "Тестовый Пользователь"
+      },
+      "expectedStatus": 201,
+      "expectedBody": {
+        "message": "string",
+        "user": {
+          "id": "number",
+          "email": "string",
+          "name": "string",
+          "isAdmin": "boolean",
+          "playerId": "number"
+        }
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Регистрация с пустыми полями",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "email": "",
+        "password": "",
+        "name": ""
+      },
+      "expectedStatus": 400,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Регистрация с коротким паролем",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "email": "user@test.com",
+        "password": "123",
+        "name": "User"
+      },
+      "expectedStatus": 400,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
