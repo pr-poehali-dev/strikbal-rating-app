@@ -58,10 +58,23 @@ const LeaderboardTab = ({ players }: LeaderboardTabProps) => {
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-3">
-                    <Avatar>
-                      <AvatarImage src={player.avatar} />
-                      <AvatarFallback>{player.name.charAt(0)}</AvatarFallback>
-                    </Avatar>
+                    {index === 0 ? (
+                      <div className="relative">
+                        <div className="absolute inset-0 -m-1 animate-flame">
+                          <div className="absolute inset-0 rounded-full bg-gradient-to-t from-purple-600 via-purple-400 to-transparent opacity-80 blur-sm"></div>
+                          <div className="absolute inset-0 rounded-full bg-gradient-to-t from-violet-600 via-violet-400 to-transparent opacity-60 blur-md animate-pulse"></div>
+                        </div>
+                        <Avatar className="relative z-10 ring-2 ring-purple-500">
+                          <AvatarImage src={player.avatar} />
+                          <AvatarFallback>{player.name.charAt(0)}</AvatarFallback>
+                        </Avatar>
+                      </div>
+                    ) : (
+                      <Avatar>
+                        <AvatarImage src={player.avatar} />
+                        <AvatarFallback>{player.name.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                    )}
                     <span className="font-medium">{player.name}</span>
                   </div>
                 </TableCell>
