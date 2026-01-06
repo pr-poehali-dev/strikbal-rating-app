@@ -26,8 +26,9 @@ def verify_admin(token: str, dsn: str) -> bool:
             return result['is_admin'] if result else False
 
 def handler(event: dict, context) -> dict:
-    '''API для получения списка игроков и загрузки аватаров'''
+    '''API для получения списка игроков, профиля игрока и загрузки аватаров'''
     method = event.get('httpMethod', 'GET')
+    path = event.get('params', {}).get('path', '')
 
     if method == 'OPTIONS':
         return {
@@ -172,6 +173,96 @@ def handler(event: dict, context) -> dict:
             }
 
         dsn = os.environ['DATABASE_URL']
+        
+        if path == '/profile':
+            with psycopg2.connect(dsn) as conn:
+                with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                    cur.execute(
+                        """
+                        SELECT user_id 
+                        FROM t_p28902192_strikbal_rating_app.sessions 
+                        WHERE token = %s AND expires_at > NOW()
+                        """,
+                        (token,)
+                    )
+                    session_result = cur.fetchone()
+                    
+                    if not session_result:
+                        return {
+                            'statusCode': 401,
+                            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                            'body': json.dumps({'error': 'Неверный токен'}),
+                            'isBase64Encoded': False
+                        }
+                    
+                    user_id = session_result['user_id']
+                    
+                    cur.execute(
+                        """
+                        SELECT u.id, u.name, u.email, u.avatar, 
+                               COALESCE(p.points, 0) as points, 
+                               COALESCE(p.wins, 0) as wins, 
+                               COALESCE(p.losses, 0) as losses,
+                               p.id as player_id
+                        FROM t_p28902192_strikbal_rating_app.users u
+                        LEFT JOIN t_p28902192_strikbal_rating_app.players p ON u.id = p.user_id
+                        WHERE u.id = %s
+                        """,
+                        (user_id,)
+                    )
+                    user_row = cur.fetchone()
+                    
+                    if not user_row:
+                        return {
+                            'statusCode': 404,
+                            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                            'body': json.dumps({'error': 'Пользователь не найден'}),
+                            'isBase64Encoded': False
+                        }
+                    
+                    user_data = dict(user_row)
+                    player_id = user_row['player_id']
+                    
+                    if player_id:
+                        cur.execute(
+                            """
+                            SELECT COUNT(*) + 1 as rank
+                            FROM t_p28902192_strikbal_rating_app.players
+                            WHERE points > (SELECT points FROM t_p28902192_strikbal_rating_app.players WHERE id = %s)
+                            """,
+                            (player_id,)
+                        )
+                        rank_row = cur.fetchone()
+                        user_data['rank'] = rank_row['rank'] if rank_row else None
+                        
+                        cur.execute(
+                            """
+                            SELECT id, name, points, completed, created_at
+                            FROM t_p28902192_strikbal_rating_app.tasks
+                            WHERE player_id = %s AND completed = true
+                            ORDER BY created_at DESC
+                            """,
+                            (player_id,)
+                        )
+                        
+                        tasks = [dict(row) for row in cur.fetchall()]
+                        for task in tasks:
+                            if task.get('created_at'):
+                                task['created_at'] = task['created_at'].isoformat()
+                        user_data['completed_tasks'] = tasks
+                    else:
+                        user_data['rank'] = None
+                        user_data['completed_tasks'] = []
+                    
+                    del user_data['player_id']
+                    
+                    return {
+                        'statusCode': 200,
+                        'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                        'body': json.dumps(user_data, default=str),
+                        'isBase64Encoded': False
+                    }
+        
         is_admin = verify_admin(token, dsn)
 
         with psycopg2.connect(dsn) as conn:
