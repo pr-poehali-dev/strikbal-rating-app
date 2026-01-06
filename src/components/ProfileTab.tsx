@@ -37,6 +37,7 @@ const ProfileTab = ({ currentPlayer }: ProfileTabProps) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -44,34 +45,40 @@ const ProfileTab = ({ currentPlayer }: ProfileTabProps) => {
     }
   };
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const token = localStorage.getItem('auth_token');
-        const response = await fetch(
-          'https://functions.poehali.dev/6013caed-cf4a-4a7f-8f68-0cc2d40ca477/profile',
-          {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          setProfileData(data);
+  const fetchProfile = async () => {
+    try {
+      const token = localStorage.getItem('auth_token');
+      const response = await fetch(
+        'https://functions.poehali.dev/6013caed-cf4a-4a7f-8f68-0cc2d40ca477/profile',
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
         }
-      } catch (error) {
-        console.error('Ошибка загрузки профиля:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+      );
 
+      if (response.ok) {
+        const data = await response.json();
+        setProfileData(data);
+      }
+    } catch (error) {
+      console.error('Ошибка загрузки профиля:', error);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+  useEffect(() => {
     fetchProfile();
   }, []);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await fetchProfile();
+  };
 
   const handleUpload = async () => {
     if (!selectedFile) return;
@@ -144,10 +151,21 @@ const ProfileTab = ({ currentPlayer }: ProfileTabProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-2xl flex items-center gap-2">
-          <Icon name="UserCircle" size={24} />
-          Мой профиль
-        </CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-2xl flex items-center gap-2">
+            <Icon name="UserCircle" size={24} />
+            Мой профиль
+          </CardTitle>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={handleRefresh}
+            disabled={refreshing}
+          >
+            <Icon name="RefreshCw" size={16} className={refreshing ? 'animate-spin' : ''} />
+            {refreshing ? 'Обновление...' : 'Обновить'}
+          </Button>
+        </div>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="flex items-start gap-6">
