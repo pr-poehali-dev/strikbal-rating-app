@@ -1,0 +1,155 @@
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Separator } from '@/components/ui/separator';
+import Icon from '@/components/ui/icon';
+import { Player, getRankIcon, getRankTitle } from './types';
+
+type ProfileTabProps = {
+  currentPlayer: Player;
+};
+
+const ProfileTab = ({ currentPlayer }: ProfileTabProps) => {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-2xl flex items-center gap-2">
+          <Icon name="UserCircle" size={24} />
+          Мой профиль
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <div className="flex items-start gap-6">
+          <Dialog>
+            <DialogTrigger asChild>
+              <div className="relative cursor-pointer group">
+                <Avatar className="w-32 h-32">
+                  <AvatarImage src={currentPlayer.avatar} />
+                  <AvatarFallback className="text-3xl">
+                    {currentPlayer.name.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="absolute inset-0 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <Icon name="Camera" size={32} className="text-white" />
+                </div>
+              </div>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Изменить аватар</DialogTitle>
+                <DialogDescription>Загрузите новое фото профиля</DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4">
+                <Input type="file" accept="image/*" />
+                <Button className="w-full">Сохранить</Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+
+          <div className="flex-1 space-y-4">
+            <div>
+              <h2 className="text-3xl font-bold">{currentPlayer.name}</h2>
+              <div className="flex items-center gap-2 mt-2">
+                <span className="text-4xl">{getRankIcon(currentPlayer.points)}</span>
+                <span className="text-xl font-semibold text-muted-foreground">
+                  {getRankTitle(currentPlayer.points)}
+                </span>
+              </div>
+            </div>
+
+            <Separator />
+
+            <div className="grid grid-cols-3 gap-4">
+              <Card>
+                <CardContent className="pt-6 text-center">
+                  <p className="text-3xl font-bold text-primary">
+                    {currentPlayer.points.toLocaleString()}
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-1">Очков</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="pt-6 text-center">
+                  <p className="text-3xl font-bold text-green-600">{currentPlayer.wins}</p>
+                  <p className="text-sm text-muted-foreground mt-1">Побед</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="pt-6 text-center">
+                  <p className="text-3xl font-bold text-red-600">{currentPlayer.losses}</p>
+                  <p className="text-sm text-muted-foreground mt-1">Поражений</p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+
+        <Separator />
+
+        <div className="space-y-4">
+          <h3 className="text-xl font-semibold flex items-center gap-2">
+            <Icon name="Award" size={22} />
+            Система достижений
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {[
+              { points: 5000, icon: '🐺', title: 'Волк', locked: currentPlayer.points < 5000 },
+              {
+                points: 10000,
+                icon: '🦈',
+                title: 'Акула',
+                locked: currentPlayer.points < 10000,
+              },
+              {
+                points: 15000,
+                icon: '🐉',
+                title: 'Дракон',
+                locked: currentPlayer.points < 15000,
+              },
+              {
+                points: 20000,
+                icon: '💀',
+                title: 'Повелитель',
+                locked: currentPlayer.points < 20000,
+              },
+              {
+                points: 25000,
+                icon: '👑',
+                title: 'Легенда',
+                locked: currentPlayer.points < 25000,
+              },
+            ].map(achievement => (
+              <Card
+                key={achievement.points}
+                className={achievement.locked ? 'opacity-50' : 'border-primary'}
+              >
+                <CardContent className="pt-6">
+                  <div className="flex items-center gap-4">
+                    <span className="text-5xl">{achievement.icon}</span>
+                    <div className="flex-1">
+                      <p className="font-bold text-lg">{achievement.title}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {achievement.points.toLocaleString()} очков
+                      </p>
+                      {achievement.locked && (
+                        <Badge variant="secondary" className="mt-2">
+                          <Icon name="Lock" size={12} className="mr-1" />
+                          Заблокировано
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+export default ProfileTab;
