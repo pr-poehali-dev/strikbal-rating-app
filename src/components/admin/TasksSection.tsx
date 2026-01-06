@@ -40,11 +40,11 @@ const TasksSection = ({ tasks, players, authToken, onTaskCreated }: TasksSection
 
     setLoading(true);
     try {
-      const response = await fetch('https://functions.poehali.dev/f3163ce6-2de5-435f-989d-d7026066ddb1', {
+      const url = `https://functions.poehali.dev/f3163ce6-2de5-435f-989d-d7026066ddb1${authToken ? `?token=${authToken}` : ''}`;
+      const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Authorization': `Bearer ${authToken}`,
         },
         body: JSON.stringify({
           name: newTaskName,
@@ -73,11 +73,11 @@ const TasksSection = ({ tasks, players, authToken, onTaskCreated }: TasksSection
   const completeTask = async (taskId: number) => {
     setLoading(true);
     try {
-      const response = await fetch('https://functions.poehali.dev/f3163ce6-2de5-435f-989d-d7026066ddb1', {
+      const url = `https://functions.poehali.dev/f3163ce6-2de5-435f-989d-d7026066ddb1${authToken ? `?token=${authToken}` : ''}`;
+      const response = await fetch(url, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'X-Authorization': `Bearer ${authToken}`,
         },
         body: JSON.stringify({ taskId }),
       });

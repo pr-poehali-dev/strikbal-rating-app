@@ -19,17 +19,17 @@ const GamesList = ({ games, authToken, onGameFinished }: GamesListProps) => {
   const finishGame = async (gameId: number, winnerTeamId: number) => {
     setLoading(true);
     try {
-      const response = await fetch('https://functions.poehali.dev/5d6c5d79-2e2f-4d81-9cba-09e58c1435d2', {
+      const url = `https://functions.poehali.dev/5d6c5d79-2e2f-4d81-9cba-09e58c1435d2${authToken ? `?token=${authToken}` : ''}`;
+      const response = await fetch(url, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'X-Authorization': `Bearer ${authToken}`,
         },
         body: JSON.stringify({ gameId, winnerTeamId }),
       });
 
       if (response.ok) {
-        toast.success('Игра завершена, очки распределены');
+        toast.success('Игра завершена! Очки распределены');
         onGameFinished();
       } else {
         const data = await response.json();

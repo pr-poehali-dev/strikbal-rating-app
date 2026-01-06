@@ -93,11 +93,11 @@ const GameCreation = ({ players, authToken, onGameCreated }: GameCreationProps) 
 
     setLoading(true);
     try {
-      const response = await fetch('https://functions.poehali.dev/5d6c5d79-2e2f-4d81-9cba-09e58c1435d2', {
+      const url = `https://functions.poehali.dev/5d6c5d79-2e2f-4d81-9cba-09e58c1435d2${authToken ? `?token=${authToken}` : ''}`;
+      const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Authorization': `Bearer ${authToken}`,
         },
         body: JSON.stringify({ name: newGameName, teams }),
       });

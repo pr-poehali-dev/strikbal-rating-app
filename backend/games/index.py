@@ -75,7 +75,9 @@ def handler(event: dict, context) -> dict:
                 if method == 'GET':
                     cur.execute(
                         """
-                        SELECT g.id, g.name, g.status, g.winner_team_id, g.created_at,
+                        SELECT g.id, g.name, g.status, 
+                               (g.status = 'completed') as finished,
+                               g.winner_team_id, g.created_at,
                                json_agg(
                                    json_build_object(
                                        'id', t.id,
