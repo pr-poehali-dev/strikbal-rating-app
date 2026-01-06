@@ -31,6 +31,7 @@ const TasksSection = ({ tasks, players, authToken, onTaskCreated }: TasksSection
   const [newTaskName, setNewTaskName] = useState('');
   const [newTaskPoints, setNewTaskPoints] = useState('');
   const [selectedPlayerId, setSelectedPlayerId] = useState('');
+  const [deletingTaskId, setDeletingTaskId] = useState<number | null>(null);
 
   const createTask = async () => {
     if (!newTaskName.trim() || !newTaskPoints || !selectedPlayerId) {
@@ -93,6 +94,32 @@ const TasksSection = ({ tasks, players, authToken, onTaskCreated }: TasksSection
       toast.error('Ошибка соединения');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const deleteTask = async (taskId: number) => {
+    if (!confirm('Вы уверены, что хотите удалить эту задачу?')) {
+      return;
+    }
+
+    setDeletingTaskId(taskId);
+    try {
+      const url = `https://functions.poehali.dev/f3163ce6-2de5-435f-989d-d7026066ddb1?token=${authToken}&taskId=${taskId}`;
+      const response = await fetch(url, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        toast.success('Задача удалена');
+        onTaskCreated();
+      } else {
+        const data = await response.json();
+        toast.error(data.error || 'Ошибка удаления задачи');
+      }
+    } catch (error) {
+      toast.error('Ошибка соединения');
+    } finally {
+      setDeletingTaskId(null);
     }
   };
 
@@ -181,15 +208,25 @@ const TasksSection = ({ tasks, players, authToken, onTaskCreated }: TasksSection
                           </Badge>
                         </div>
                       </div>
-                      <Button
-                        variant="default"
-                        size="sm"
-                        onClick={() => completeTask(task.id)}
-                        disabled={loading}
-                      >
-                        <Icon name="CheckCircle" size={16} />
-                        Выполнить
-                      </Button>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="default"
+                          size="sm"
+                          onClick={() => completeTask(task.id)}
+                          disabled={loading}
+                        >
+                          <Icon name="CheckCircle" size={16} />
+                          Выполнить
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => deleteTask(task.id)}
+                          disabled={deletingTaskId === task.id}
+                        >
+                          <Icon name="Trash2" size={18} className="text-red-600" />
+                        </Button>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -225,6 +262,14 @@ const TasksSection = ({ tasks, players, authToken, onTaskCreated }: TasksSection
                             </Badge>
                           </div>
                         </div>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => deleteTask(task.id)}
+                          disabled={deletingTaskId === task.id}
+                        >
+                          <Icon name="Trash2" size={18} className="text-red-600" />
+                        </Button>
                       </div>
                     </CardContent>
                   </Card>

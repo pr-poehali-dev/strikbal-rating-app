@@ -23,7 +23,7 @@ def verify_admin(token: str, dsn: str) -> bool:
             return result['is_admin'] if result else False
 
 def handler(event: dict, context) -> dict:
-    '''API для управления играми (создание, получение, завершение)'''
+    '''API для управления играми (создание, получение, завершение, удаление)'''
     method = event.get('httpMethod', 'GET')
 
     if method == 'OPTIONS':
@@ -31,7 +31,7 @@ def handler(event: dict, context) -> dict:
             'statusCode': 200,
             'headers': {
                 'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET, POST, PUT, OPTIONS',
+                'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
                 'Access-Control-Allow-Headers': 'Content-Type, X-Authorization'
             },
             'body': '',
@@ -248,6 +248,54 @@ def handler(event: dict, context) -> dict:
                         'statusCode': 200,
                         'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
                         'body': json.dumps({'message': 'Игра завершена, очки начислены'}),
+                        'isBase64Encoded': False
+                    }
+
+                elif method == 'DELETE':
+                    query_params = event.get('queryStringParameters', {}) or {}
+                    game_id = query_params.get('gameId')
+
+                    if not game_id:
+                        return {
+                            'statusCode': 400,
+                            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                            'body': json.dumps({'error': 'Укажите ID игры'}),
+                            'isBase64Encoded': False
+                        }
+
+                    cur.execute(
+                        """
+                        DELETE FROM t_p28902192_strikbal_rating_app.team_players
+                        WHERE team_id IN (
+                            SELECT id FROM t_p28902192_strikbal_rating_app.teams
+                            WHERE game_id = %s
+                        )
+                        """,
+                        (game_id,)
+                    )
+
+                    cur.execute(
+                        """
+                        DELETE FROM t_p28902192_strikbal_rating_app.teams
+                        WHERE game_id = %s
+                        """,
+                        (game_id,)
+                    )
+
+                    cur.execute(
+                        """
+                        DELETE FROM t_p28902192_strikbal_rating_app.games
+                        WHERE id = %s
+                        """,
+                        (game_id,)
+                    )
+
+                    conn.commit()
+
+                    return {
+                        'statusCode': 200,
+                        'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                        'body': json.dumps({'message': 'Игра удалена'}),
                         'isBase64Encoded': False
                     }
 

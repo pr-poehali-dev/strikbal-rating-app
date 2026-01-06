@@ -15,6 +15,7 @@ type GamesListProps = {
 
 const GamesList = ({ games, authToken, onGameFinished }: GamesListProps) => {
   const [loading, setLoading] = useState(false);
+  const [deletingGameId, setDeletingGameId] = useState<number | null>(null);
 
   const finishGame = async (gameId: number, winnerTeamId: number) => {
     setLoading(true);
@@ -39,6 +40,32 @@ const GamesList = ({ games, authToken, onGameFinished }: GamesListProps) => {
       toast.error('Ошибка соединения');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const deleteGame = async (gameId: number) => {
+    if (!confirm('Вы уверены, что хотите удалить эту игру?')) {
+      return;
+    }
+
+    setDeletingGameId(gameId);
+    try {
+      const url = `https://functions.poehali.dev/5d6c5d79-2e2f-4d81-9cba-09e58c1435d2?token=${authToken}&gameId=${gameId}`;
+      const response = await fetch(url, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        toast.success('Игра удалена');
+        onGameFinished();
+      } else {
+        const data = await response.json();
+        toast.error(data.error || 'Ошибка удаления игры');
+      }
+    } catch (error) {
+      toast.error('Ошибка соединения');
+    } finally {
+      setDeletingGameId(null);
     }
   };
 
@@ -136,9 +163,19 @@ const GamesList = ({ games, authToken, onGameFinished }: GamesListProps) => {
                     <CardContent className="pt-6 space-y-4">
                       <div className="flex items-center justify-between">
                         <h4 className="text-xl font-bold">{game.name}</h4>
-                        <Badge variant="secondary">
-                          {new Date(game.created_at).toLocaleDateString('ru-RU')}
-                        </Badge>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="secondary">
+                            {new Date(game.created_at).toLocaleDateString('ru-RU')}
+                          </Badge>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => deleteGame(game.id)}
+                            disabled={deletingGameId === game.id}
+                          >
+                            <Icon name="Trash2" size={18} className="text-red-600" />
+                          </Button>
+                        </div>
                       </div>
 
                       <div className="space-y-3">

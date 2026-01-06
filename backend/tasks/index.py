@@ -31,7 +31,7 @@ def handler(event: dict, context) -> dict:
             'statusCode': 200,
             'headers': {
                 'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET, POST, PUT, OPTIONS',
+                'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
                 'Access-Control-Allow-Headers': 'Content-Type, X-Authorization'
             },
             'body': '',
@@ -183,6 +183,35 @@ def handler(event: dict, context) -> dict:
                         'statusCode': 200,
                         'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
                         'body': json.dumps({'message': 'Задача выполнена, очки начислены'}),
+                        'isBase64Encoded': False
+                    }
+
+                elif method == 'DELETE':
+                    query_params = event.get('queryStringParameters', {}) or {}
+                    task_id = query_params.get('taskId')
+
+                    if not task_id:
+                        return {
+                            'statusCode': 400,
+                            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                            'body': json.dumps({'error': 'Укажите ID задачи'}),
+                            'isBase64Encoded': False
+                        }
+
+                    cur.execute(
+                        """
+                        DELETE FROM t_p28902192_strikbal_rating_app.tasks
+                        WHERE id = %s
+                        """,
+                        (task_id,)
+                    )
+
+                    conn.commit()
+
+                    return {
+                        'statusCode': 200,
+                        'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                        'body': json.dumps({'message': 'Задача удалена'}),
                         'isBase64Encoded': False
                     }
 
