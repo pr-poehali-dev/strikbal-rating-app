@@ -56,7 +56,7 @@ const Index = () => {
   const loadPlayers = async (token: string) => {
     try {
       const response = await fetch('https://functions.poehali.dev/6013caed-cf4a-4a7f-8f68-0cc2d40ca477', {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { 'X-Authorization': `Bearer ${token}` },
       });
       const data = await response.json();
       if (response.ok && data.players) {
