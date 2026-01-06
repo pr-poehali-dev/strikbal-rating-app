@@ -425,10 +425,11 @@ const ProfileTab = ({ currentPlayer }: ProfileTabProps) => {
               },
               {
                 points: 20000,
-                icon: '💀',
+                icon: 'https://cdn.poehali.dev/files/a7164ee2-fc7d-41b5-9038-eae5ac54c648_5610f251-8aa3-4ecc-8e08-e911e6b91686 (1).png',
                 title: 'Повелитель',
                 locked: displayData.points < 20000,
-                isImage: false,
+                isImage: true,
+                hasFireAura: true,
               },
               {
                 points: 25000,
@@ -445,11 +446,22 @@ const ProfileTab = ({ currentPlayer }: ProfileTabProps) => {
                 <CardContent className="pt-4 md:pt-6">
                   <div className="flex items-center gap-3 md:gap-4">
                     {achievement.isImage ? (
-                      <img 
-                        src={achievement.icon} 
-                        alt={achievement.title}
-                        className="w-12 h-12 md:w-16 md:h-16 object-contain flex-shrink-0"
-                      />
+                      <div className="relative flex-shrink-0">
+                        {achievement.hasFireAura && !achievement.locked && (
+                          <div className="absolute -inset-2 animate-red-flame">
+                            <div className="absolute left-0 top-0 w-2 h-3 bg-gradient-to-t from-red-600 via-orange-500 to-yellow-400 rounded-full blur-sm animate-flicker-1"></div>
+                            <div className="absolute right-0 top-1 w-2 h-4 bg-gradient-to-t from-red-700 via-orange-600 to-yellow-500 rounded-full blur-sm animate-flicker-2"></div>
+                            <div className="absolute left-2 bottom-0 w-2 h-3 bg-gradient-to-t from-red-600 via-orange-500 to-yellow-400 rounded-full blur-sm animate-flicker-3"></div>
+                            <div className="absolute right-2 bottom-1 w-2 h-4 bg-gradient-to-t from-red-700 via-orange-600 to-yellow-500 rounded-full blur-sm animate-flicker-1"></div>
+                            <div className="absolute inset-0 rounded-lg bg-gradient-to-t from-red-600/40 via-orange-500/30 to-transparent blur-md animate-pulse"></div>
+                          </div>
+                        )}
+                        <img 
+                          src={achievement.icon} 
+                          alt={achievement.title}
+                          className="w-12 h-12 md:w-16 md:h-16 object-contain relative z-10"
+                        />
+                      </div>
                     ) : (
                       <span className="text-3xl md:text-5xl flex-shrink-0">{achievement.icon}</span>
                     )}
