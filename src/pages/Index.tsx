@@ -20,6 +20,14 @@ const Index = () => {
   const [games, setGames] = useState<Game[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [currentPlayer, setCurrentPlayer] = useState<Player | null>(null);
+  const [newGameName, setNewGameName] = useState('');
+  const [selectedPlayers, setSelectedPlayers] = useState<string[]>([]);
+  const [teams, setTeams] = useState<Team[]>([]);
+  const [newTeamName, setNewTeamName] = useState('');
+  const [newTeamColor, setNewTeamColor] = useState('#0EA5E9');
+  const [newTaskName, setNewTaskName] = useState('');
+  const [newTaskPoints, setNewTaskPoints] = useState('');
+  const [newTaskPlayer, setNewTaskPlayer] = useState('');
 
   useEffect(() => {
     const token = localStorage.getItem('auth_token');
@@ -74,16 +82,6 @@ const Index = () => {
   if (!isAuthenticated) {
     return <AuthPage onLogin={handleLogin} />;
   }
-
-  const [newGameName, setNewGameName] = useState('');
-  const [selectedPlayers, setSelectedPlayers] = useState<string[]>([]);
-  const [teams, setTeams] = useState<Team[]>([]);
-  const [newTeamName, setNewTeamName] = useState('');
-  const [newTeamColor, setNewTeamColor] = useState('#0EA5E9');
-
-  const [newTaskName, setNewTaskName] = useState('');
-  const [newTaskPoints, setNewTaskPoints] = useState('');
-  const [newTaskPlayer, setNewTaskPlayer] = useState('');
 
   const createGame = () => {
     if (!newGameName.trim()) {
