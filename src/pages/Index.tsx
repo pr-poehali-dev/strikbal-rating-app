@@ -239,42 +239,45 @@ const Index = () => {
     <div className="min-h-screen relative overflow-hidden">
       <div className="fixed inset-0 bg-gradient-to-br from-black via-gray-900 to-orange-950 blur-3xl animate-gradient-pulse -z-10"></div>
       <div className="fixed inset-0 bg-black/40 -z-10"></div>
-      <div className="container mx-auto py-6 px-4 max-w-7xl relative z-0">
-        <div className="flex items-center justify-between mb-8">
+      <div className="container mx-auto py-4 md:py-6 px-3 md:px-4 max-w-7xl relative z-0">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 md:mb-8 gap-4">
           <div>
-            <h1 className="text-4xl font-bold text-foreground mb-2 flex items-center gap-3">
-              <Icon name="Target" size={40} className="text-primary" />
+            <h1 className="text-2xl md:text-4xl font-bold text-foreground mb-1 md:mb-2 flex items-center gap-2 md:gap-3">
+              <Icon name="Target" size={28} className="text-primary md:w-10 md:h-10" />
               Страйкбол Рейтинг
             </h1>
-            <p className="text-muted-foreground">Система рейтинга от Дмитрия Ильина</p>
+            <p className="text-sm md:text-base text-muted-foreground">Система рейтинга от Дмитрия Ильина</p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 md:gap-3 w-full md:w-auto">
             {isAdmin && (
-              <Badge variant="default" className="text-base px-4 py-2">
-                <Icon name="Shield" size={16} className="mr-2" />
-                Администратор
+              <Badge variant="default" className="text-xs md:text-base px-2 md:px-4 py-1 md:py-2">
+                <Icon name="Shield" size={14} className="mr-1 md:mr-2 md:w-4 md:h-4" />
+                Админ
               </Badge>
             )}
-            <Button variant="outline" onClick={handleLogout}>
-              <Icon name="LogOut" size={16} className="mr-2" />
+            <Button variant="outline" onClick={handleLogout} className="text-xs md:text-base">
+              <Icon name="LogOut" size={14} className="mr-1 md:mr-2 md:w-4 md:h-4" />
               Выход
             </Button>
           </div>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-8">
-            <TabsTrigger value="leaderboard" className="text-base">
-              <Icon name="Trophy" size={18} className="mr-2" />
-              Рейтинг
+          <TabsList className="grid w-full grid-cols-3 mb-4 md:mb-8">
+            <TabsTrigger value="leaderboard" className="text-xs md:text-base px-2 md:px-4">
+              <Icon name="Trophy" size={16} className="mr-1 md:mr-2 md:w-[18px] md:h-[18px]" />
+              <span className="hidden sm:inline">Рейтинг</span>
+              <span className="sm:hidden">🏆</span>
             </TabsTrigger>
-            <TabsTrigger value="events" className="text-base">
-              <Icon name="Sword" size={18} className="mr-2" />
-              События
+            <TabsTrigger value="events" className="text-xs md:text-base px-2 md:px-4">
+              <Icon name="Sword" size={16} className="mr-1 md:mr-2 md:w-[18px] md:h-[18px]" />
+              <span className="hidden sm:inline">События</span>
+              <span className="sm:hidden">⚔️</span>
             </TabsTrigger>
-            <TabsTrigger value="profile" className="text-base">
-              <Icon name="User" size={18} className="mr-2" />
-              Профиль
+            <TabsTrigger value="profile" className="text-xs md:text-base px-2 md:px-4">
+              <Icon name="User" size={16} className="mr-1 md:mr-2 md:w-[18px] md:h-[18px]" />
+              <span className="hidden sm:inline">Профиль</span>
+              <span className="sm:hidden">👤</span>
             </TabsTrigger>
           </TabsList>
 

@@ -82,14 +82,16 @@ const AuthPage = ({ onLogin }: AuthPageProps) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-muted/20 to-background p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden p-3 md:p-4">
+      <div className="fixed inset-0 bg-gradient-to-br from-black via-gray-900 to-orange-950 blur-3xl animate-gradient-pulse -z-10"></div>
+      <div className="fixed inset-0 bg-black/40 -z-10"></div>
+      <Card className="w-full max-w-md relative z-0">
         <CardHeader className="text-center">
-          <div className="flex justify-center mb-4">
-            <Icon name="Target" size={48} className="text-primary" />
+          <div className="flex justify-center mb-3 md:mb-4">
+            <Icon name="Target" size={36} className="text-primary md:w-12 md:h-12" />
           </div>
-          <CardTitle className="text-3xl">Страйкбол Рейтинг</CardTitle>
-          <CardDescription>Система рейтинга от Дмитрия Ильина</CardDescription>
+          <CardTitle className="text-2xl md:text-3xl">Страйкбол Рейтинг</CardTitle>
+          <CardDescription className="text-sm md:text-base">Система рейтинга от Дмитрия Ильина</CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="login">

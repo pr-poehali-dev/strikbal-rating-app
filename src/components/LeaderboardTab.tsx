@@ -27,22 +27,22 @@ const LeaderboardTab = ({ players }: LeaderboardTabProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-2xl flex items-center gap-2">
-          <Icon name="Medal" size={24} />
+        <CardTitle className="text-xl md:text-2xl flex items-center gap-2">
+          <Icon name="Medal" size={20} className="md:w-6 md:h-6" />
           Таблица лидеров
         </CardTitle>
-        <CardDescription>Лучшие игроки по количеству очков</CardDescription>
+        <CardDescription className="text-sm">Лучшие игроки по количеству очков</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-16">Место</TableHead>
-              <TableHead>Игрок</TableHead>
-              <TableHead className="text-center">Ранг</TableHead>
-              <TableHead className="text-center">Очки</TableHead>
-              <TableHead className="text-center">Победы</TableHead>
-              <TableHead className="text-center">Поражения</TableHead>
+              <TableHead className="w-12 md:w-16 text-xs md:text-sm">Место</TableHead>
+              <TableHead className="text-xs md:text-sm">Игрок</TableHead>
+              <TableHead className="text-center text-xs md:text-sm hidden sm:table-cell">Ранг</TableHead>
+              <TableHead className="text-center text-xs md:text-sm">Очки</TableHead>
+              <TableHead className="text-center text-xs md:text-sm hidden md:table-cell">Победы</TableHead>
+              <TableHead className="text-center text-xs md:text-sm hidden md:table-cell">Поражения</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -52,12 +52,13 @@ const LeaderboardTab = ({ players }: LeaderboardTabProps) => {
                 className={`${index === 0 ? 'bg-primary/5' : ''} cursor-pointer hover:bg-muted/50 transition-colors`}
                 onClick={() => setSelectedPlayerId(player.id)}
               >
-                <TableCell className="font-bold">
-                  {index === 0 && <Icon name="Crown" size={20} className="text-yellow-500 inline mr-1" />}
-                  #{index + 1}
+                <TableCell className="font-bold text-xs md:text-base">
+                  {index === 0 && <Icon name="Crown" size={16} className="text-yellow-500 inline mr-0.5 md:mr-1 md:w-5 md:h-5" />}
+                  <span className="hidden sm:inline">#{index + 1}</span>
+                  <span className="sm:hidden">{index + 1}</span>
                 </TableCell>
                 <TableCell>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 md:gap-3">
                     {index === 0 ? (
                       <div className="relative">
                         <div className="absolute inset-0 -m-1 animate-flame">
@@ -98,31 +99,31 @@ const LeaderboardTab = ({ players }: LeaderboardTabProps) => {
                         </Avatar>
                       </div>
                     ) : (
-                      <Avatar>
+                      <Avatar className="w-8 h-8 md:w-10 md:h-10">
                         <AvatarImage src={player.avatar} />
                         <AvatarFallback>{player.name.charAt(0)}</AvatarFallback>
                       </Avatar>
                     )}
-                    <span className="font-medium">{player.name}</span>
+                    <span className="font-medium text-xs md:text-base truncate max-w-[100px] md:max-w-none">{player.name}</span>
                   </div>
                 </TableCell>
-                <TableCell className="text-center">
-                  <div className="flex items-center justify-center gap-2">
-                    <span className="text-2xl">{getRankIcon(player.points)}</span>
-                    <span className="text-sm text-muted-foreground">
+                <TableCell className="text-center hidden sm:table-cell">
+                  <div className="flex items-center justify-center gap-1 md:gap-2">
+                    <span className="text-xl md:text-2xl">{getRankIcon(player.points)}</span>
+                    <span className="text-xs md:text-sm text-muted-foreground hidden lg:inline">
                       {getRankTitle(player.points)}
                     </span>
                   </div>
                 </TableCell>
                 <TableCell className="text-center">
-                  <Badge variant="secondary" className="font-bold text-base">
+                  <Badge variant="secondary" className="font-bold text-xs md:text-base px-1.5 md:px-2.5">
                     {player.points.toLocaleString()}
                   </Badge>
                 </TableCell>
-                <TableCell className="text-center text-green-600 font-semibold">
+                <TableCell className="text-center text-green-600 font-semibold text-xs md:text-base hidden md:table-cell">
                   {player.wins}
                 </TableCell>
-                <TableCell className="text-center text-red-600 font-semibold">
+                <TableCell className="text-center text-red-600 font-semibold text-xs md:text-base hidden md:table-cell">
                   {player.losses}
                 </TableCell>
               </TableRow>

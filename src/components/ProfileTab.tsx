@@ -153,9 +153,9 @@ const ProfileTab = ({ currentPlayer }: ProfileTabProps) => {
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-2xl flex items-center gap-2">
-            <Icon name="UserCircle" size={24} />
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <CardTitle className="text-xl md:text-2xl flex items-center gap-2">
+            <Icon name="UserCircle" size={20} className="md:w-6 md:h-6" />
             Мой профиль
           </CardTitle>
           <Button 
@@ -163,14 +163,15 @@ const ProfileTab = ({ currentPlayer }: ProfileTabProps) => {
             size="sm" 
             onClick={handleRefresh}
             disabled={refreshing}
+            className="text-xs md:text-sm w-full sm:w-auto"
           >
-            <Icon name="RefreshCw" size={16} className={refreshing ? 'animate-spin' : ''} />
-            {refreshing ? 'Обновление...' : 'Обновить'}
+            <Icon name="RefreshCw" size={14} className={`${refreshing ? 'animate-spin' : ''} md:w-4 md:h-4`} />
+            <span className="ml-1 md:ml-2">{refreshing ? 'Обновление...' : 'Обновить'}</span>
           </Button>
         </div>
       </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="flex items-start gap-6">
+      <CardContent className="space-y-4 md:space-y-6">
+        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 md:gap-6">
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <div className="relative cursor-pointer group">
@@ -266,19 +267,19 @@ const ProfileTab = ({ currentPlayer }: ProfileTabProps) => {
             </DialogContent>
           </Dialog>
 
-          <div className="flex-1 space-y-4">
-            <div>
-              <h2 className="text-3xl font-bold">{displayData.name}</h2>
-              <div className="flex items-center gap-3 mt-2">
+          <div className="flex-1 space-y-3 md:space-y-4 w-full">
+            <div className="text-center sm:text-left">
+              <h2 className="text-2xl md:text-3xl font-bold">{displayData.name}</h2>
+              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-2 md:gap-3 mt-2">
                 <div className="flex items-center gap-2">
-                  <span className="text-4xl">{getRankIcon(displayData.points)}</span>
-                  <span className="text-xl font-semibold text-muted-foreground">
+                  <span className="text-3xl md:text-4xl">{getRankIcon(displayData.points)}</span>
+                  <span className="text-base md:text-xl font-semibold text-muted-foreground">
                     {getRankTitle(displayData.points)}
                   </span>
                 </div>
                 {profileData?.rank && (
-                  <Badge variant="outline" className="text-base">
-                    <Icon name="Trophy" size={16} className="mr-1" />
+                  <Badge variant="outline" className="text-sm md:text-base">
+                    <Icon name="Trophy" size={14} className="mr-1 md:w-4 md:h-4" />
                     Место #{profileData.rank}
                   </Badge>
                 )}
@@ -287,25 +288,25 @@ const ProfileTab = ({ currentPlayer }: ProfileTabProps) => {
 
             <Separator />
 
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-3 gap-2 md:gap-4">
               <Card>
-                <CardContent className="pt-6 text-center">
-                  <p className="text-3xl font-bold text-primary">
+                <CardContent className="pt-3 md:pt-6 text-center">
+                  <p className="text-xl md:text-3xl font-bold text-primary">
                     {displayData.points.toLocaleString()}
                   </p>
-                  <p className="text-sm text-muted-foreground mt-1">Очков</p>
+                  <p className="text-xs md:text-sm text-muted-foreground mt-1">Очков</p>
                 </CardContent>
               </Card>
               <Card>
-                <CardContent className="pt-6 text-center">
-                  <p className="text-3xl font-bold text-green-600">{displayData.wins}</p>
-                  <p className="text-sm text-muted-foreground mt-1">Побед</p>
+                <CardContent className="pt-3 md:pt-6 text-center">
+                  <p className="text-xl md:text-3xl font-bold text-green-600">{displayData.wins}</p>
+                  <p className="text-xs md:text-sm text-muted-foreground mt-1">Побед</p>
                 </CardContent>
               </Card>
               <Card>
-                <CardContent className="pt-6 text-center">
-                  <p className="text-3xl font-bold text-red-600">{displayData.losses}</p>
-                  <p className="text-sm text-muted-foreground mt-1">Поражений</p>
+                <CardContent className="pt-3 md:pt-6 text-center">
+                  <p className="text-xl md:text-3xl font-bold text-red-600">{displayData.losses}</p>
+                  <p className="text-xs md:text-sm text-muted-foreground mt-1">Поражений</p>
                 </CardContent>
               </Card>
             </div>
@@ -316,41 +317,43 @@ const ProfileTab = ({ currentPlayer }: ProfileTabProps) => {
 
         {profileData && profileData.games_history && profileData.games_history.length > 0 && (
           <>
-            <div className="space-y-4">
-              <h3 className="text-xl font-semibold flex items-center gap-2">
-                <Icon name="Swords" size={22} />
+            <div className="space-y-3 md:space-y-4">
+              <h3 className="text-lg md:text-xl font-semibold flex items-center gap-2">
+                <Icon name="Swords" size={18} className="md:w-[22px] md:h-[22px]" />
                 История игр
               </h3>
               <div className="space-y-2">
                 {profileData.games_history.map((game) => (
                   <Card key={game.id} className={game.won ? 'border-green-500' : 'border-red-500'}>
-                    <CardContent className="pt-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
+                    <CardContent className="pt-3 md:pt-4">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
                           <div
-                            className="w-4 h-4 rounded-full"
+                            className="w-3 h-3 md:w-4 md:h-4 rounded-full flex-shrink-0"
                             style={{ backgroundColor: game.team_color }}
                           />
-                          <div>
-                            <p className="font-semibold">{game.name}</p>
-                            <p className="text-sm text-muted-foreground">
-                              Команда: {game.team_name}
+                          <div className="min-w-0 flex-1">
+                            <p className="font-semibold text-sm md:text-base truncate">{game.name}</p>
+                            <p className="text-xs md:text-sm text-muted-foreground truncate">
+                              {game.team_name}
                             </p>
                             <p className="text-xs text-muted-foreground">
                               {new Date(game.created_at).toLocaleDateString('ru-RU')}
                             </p>
                           </div>
                         </div>
-                        <Badge variant={game.won ? 'default' : 'secondary'} className={game.won ? 'bg-green-600' : 'bg-red-600'}>
+                        <Badge variant={game.won ? 'default' : 'secondary'} className={`${game.won ? 'bg-green-600' : 'bg-red-600'} text-xs md:text-sm flex-shrink-0`}>
                           {game.won ? (
                             <>
-                              <Icon name="Trophy" size={14} className="mr-1" />
-                              Победа
+                              <Icon name="Trophy" size={12} className="mr-0.5 md:mr-1 md:w-[14px] md:h-[14px]" />
+                              <span className="hidden sm:inline">Победа</span>
+                              <span className="sm:hidden">🏆</span>
                             </>
                           ) : (
                             <>
-                              <Icon name="X" size={14} className="mr-1" />
-                              Поражение
+                              <Icon name="X" size={12} className="mr-0.5 md:mr-1 md:w-[14px] md:h-[14px]" />
+                              <span className="hidden sm:inline">Поражение</span>
+                              <span className="sm:hidden">❌</span>
                             </>
                           )}
                         </Badge>
@@ -366,27 +369,27 @@ const ProfileTab = ({ currentPlayer }: ProfileTabProps) => {
 
         {profileData && profileData.completed_tasks.length > 0 && (
           <>
-            <div className="space-y-4">
-              <h3 className="text-xl font-semibold flex items-center gap-2">
-                <Icon name="CheckCircle" size={22} />
+            <div className="space-y-3 md:space-y-4">
+              <h3 className="text-lg md:text-xl font-semibold flex items-center gap-2">
+                <Icon name="CheckCircle" size={18} className="md:w-[22px] md:h-[22px]" />
                 Дополнительные задания
               </h3>
               <div className="space-y-2">
                 {profileData.completed_tasks.map((task) => (
                   <Card key={task.id}>
-                    <CardContent className="pt-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <Icon name="CheckCircle" size={20} className="text-green-600" />
-                          <div>
-                            <p className="font-semibold">{task.name}</p>
+                    <CardContent className="pt-3 md:pt-4">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
+                          <Icon name="CheckCircle" size={16} className="text-green-600 flex-shrink-0 md:w-5 md:h-5" />
+                          <div className="min-w-0 flex-1">
+                            <p className="font-semibold text-sm md:text-base truncate">{task.name}</p>
                             <p className="text-xs text-muted-foreground">
                               {new Date(task.created_at).toLocaleDateString('ru-RU')}
                             </p>
                           </div>
                         </div>
-                        <Badge variant="secondary" className="font-bold">
-                          +{task.points} очков
+                        <Badge variant="secondary" className="font-bold text-xs md:text-sm flex-shrink-0">
+                          +{task.points}
                         </Badge>
                       </div>
                     </CardContent>
@@ -398,12 +401,12 @@ const ProfileTab = ({ currentPlayer }: ProfileTabProps) => {
           </>
         )}
 
-        <div className="space-y-4">
-          <h3 className="text-xl font-semibold flex items-center gap-2">
-            <Icon name="Award" size={22} />
+        <div className="space-y-3 md:space-y-4">
+          <h3 className="text-lg md:text-xl font-semibold flex items-center gap-2">
+            <Icon name="Award" size={18} className="md:w-[22px] md:h-[22px]" />
             Система достижений
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
             {[
               { points: 5000, icon: '🐺', title: 'Волк', locked: displayData.points < 5000 },
               {
@@ -435,17 +438,17 @@ const ProfileTab = ({ currentPlayer }: ProfileTabProps) => {
                 key={achievement.points}
                 className={achievement.locked ? 'opacity-50' : 'border-primary'}
               >
-                <CardContent className="pt-6">
-                  <div className="flex items-center gap-4">
-                    <span className="text-5xl">{achievement.icon}</span>
-                    <div className="flex-1">
-                      <p className="font-bold text-lg">{achievement.title}</p>
-                      <p className="text-sm text-muted-foreground">
+                <CardContent className="pt-4 md:pt-6">
+                  <div className="flex items-center gap-3 md:gap-4">
+                    <span className="text-3xl md:text-5xl flex-shrink-0">{achievement.icon}</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-bold text-base md:text-lg">{achievement.title}</p>
+                      <p className="text-xs md:text-sm text-muted-foreground">
                         {achievement.points.toLocaleString()} очков
                       </p>
                       {achievement.locked && (
-                        <Badge variant="secondary" className="mt-2">
-                          <Icon name="Lock" size={12} className="mr-1" />
+                        <Badge variant="secondary" className="mt-1 md:mt-2 text-xs">
+                          <Icon name="Lock" size={10} className="mr-0.5 md:mr-1 md:w-3 md:h-3" />
                           Заблокировано
                         </Badge>
                       )}
