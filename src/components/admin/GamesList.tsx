@@ -90,9 +90,19 @@ const GamesList = ({ games, authToken, onGameFinished }: GamesListProps) => {
                   <CardContent className="pt-6 space-y-4">
                     <div className="flex items-center justify-between">
                       <h4 className="text-xl font-bold">{game.name}</h4>
-                      <Badge>
-                        {new Date(game.created_at).toLocaleDateString('ru-RU')}
-                      </Badge>
+                      <div className="flex items-center gap-2">
+                        <Badge>
+                          {new Date(game.created_at).toLocaleDateString('ru-RU')}
+                        </Badge>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => deleteGame(game.id)}
+                          disabled={deletingGameId === game.id}
+                        >
+                          <Icon name="Trash2" size={18} className="text-red-600" />
+                        </Button>
+                      </div>
                     </div>
 
                     <div className="space-y-3">
