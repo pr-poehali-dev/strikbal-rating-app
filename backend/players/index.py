@@ -28,7 +28,8 @@ def verify_admin(token: str, dsn: str) -> bool:
 def handler(event: dict, context) -> dict:
     '''API для получения списка игроков, профиля игрока и загрузки аватаров'''
     method = event.get('httpMethod', 'GET')
-    path = event.get('params', {}).get('path', '')
+    query_params = event.get('queryStringParameters', {}) or {}
+    action = query_params.get('action', '')
 
     if method == 'OPTIONS':
         return {
@@ -175,7 +176,7 @@ def handler(event: dict, context) -> dict:
 
         dsn = os.environ['DATABASE_URL']
         
-        if path == '/profile':
+        if action == 'profile':
             with psycopg2.connect(dsn) as conn:
                 with conn.cursor(cursor_factory=RealDictCursor) as cur:
                     cur.execute(
