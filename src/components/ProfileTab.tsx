@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -13,6 +14,55 @@ type ProfileTabProps = {
 };
 
 const ProfileTab = ({ currentPlayer }: ProfileTabProps) => {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setSelectedFile(e.target.files[0]);
+    }
+  };
+
+  const handleUpload = async () => {
+    if (!selectedFile) return;
+
+    setUploading(true);
+
+    try {
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const base64 = reader.result as string;
+        
+        const response = await fetch('https://functions.poehali.dev/bbb53eb5-28d8-4ba0-9e70-dfa59e7450a6', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            player_id: currentPlayer.id,
+            avatar_base64: base64,
+          }),
+        });
+
+        if (!response.ok) throw new Error('Ошибка загрузки');
+
+        const data = await response.json();
+        currentPlayer.avatar = data.avatar_url;
+        setIsDialogOpen(false);
+        setSelectedFile(null);
+        window.location.reload();
+      };
+
+      reader.readAsDataURL(selectedFile);
+    } catch (error) {
+      console.error('Ошибка загрузки аватара:', error);
+      alert('Не удалось загрузить аватар');
+    } finally {
+      setUploading(false);
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -23,7 +73,7 @@ const ProfileTab = ({ currentPlayer }: ProfileTabProps) => {
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="flex items-start gap-6">
-          <Dialog>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <div className="relative cursor-pointer group">
                 <Avatar className="w-32 h-32">
@@ -43,8 +93,19 @@ const ProfileTab = ({ currentPlayer }: ProfileTabProps) => {
                 <DialogDescription>Загрузите новое фото профиля</DialogDescription>
               </DialogHeader>
               <div className="space-y-4">
-                <Input type="file" accept="image/*" />
-                <Button className="w-full">Сохранить</Button>
+                <Input type="file" accept="image/*" onChange={handleFileChange} />
+                {selectedFile && (
+                  <p className="text-sm text-muted-foreground">
+                    Выбран файл: {selectedFile.name}
+                  </p>
+                )}
+                <Button 
+                  className="w-full" 
+                  onClick={handleUpload}
+                  disabled={!selectedFile || uploading}
+                >
+                  {uploading ? 'Загрузка...' : 'Сохранить'}
+                </Button>
               </div>
             </DialogContent>
           </Dialog>
