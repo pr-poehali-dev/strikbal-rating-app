@@ -10,6 +10,7 @@ import EventsTab from '@/components/EventsTab';
 import ProfileTab from '@/components/ProfileTab';
 import AuthPage from '@/components/AuthPage';
 import AdminEventsTab from '@/components/AdminEventsTab';
+import PlayerEventsTab from '@/components/PlayerEventsTab';
 
 const Index = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -282,6 +283,8 @@ const Index = () => {
           <TabsContent value="events" className="space-y-6">
             {isAdmin && authToken ? (
               <AdminEventsTab authToken={authToken} />
+            ) : authToken && currentUser ? (
+              <PlayerEventsTab authToken={authToken} currentUserId={currentUser.id} />
             ) : (
               <EventsTab
                 isAdmin={isAdmin}

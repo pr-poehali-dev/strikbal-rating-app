@@ -44,9 +44,19 @@ def handler(event: dict, context) -> dict:
         if not auth_header:
             auth_header = headers.get('authorization', headers.get('Authorization', ''))
         token = auth_header.replace('Bearer ', '').strip()
+        
+        if not token:
+            return {
+                'statusCode': 401,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({'error': 'Требуется авторизация'}),
+                'isBase64Encoded': False
+            }
+        
         dsn = os.environ['DATABASE_URL']
-
-        if not verify_admin(token, dsn):
+        is_admin = verify_admin(token, dsn)
+        
+        if method != 'GET' and not is_admin:
             return {
                 'statusCode': 403,
                 'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},

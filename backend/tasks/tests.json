@@ -1,23 +1,23 @@
 {
   "tests": [
     {
-      "name": "Получение задач без прав админа",
+      "name": "Получение задач без токена",
       "method": "GET",
       "path": "/",
-      "expectedStatus": 403,
+      "expectedStatus": 401,
       "expectedBody": {
-        "error": "string"
+        "error": "Требуется авторизация"
       },
       "bodyMatcher": "partial"
     },
     {
-      "name": "Создание задачи без данных",
+      "name": "Создание задачи без токена",
       "method": "POST",
       "path": "/",
       "body": {},
-      "expectedStatus": 403,
+      "expectedStatus": 401,
       "expectedBody": {
-        "error": "string"
+        "error": "Требуется авторизация"
       },
       "bodyMatcher": "partial"
     }

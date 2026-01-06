@@ -1,23 +1,23 @@
 {
   "tests": [
     {
-      "name": "Получение игр без прав админа",
+      "name": "Получение игр без токена",
       "method": "GET",
       "path": "/",
-      "expectedStatus": 403,
+      "expectedStatus": 401,
       "expectedBody": {
-        "error": "string"
+        "error": "Требуется авторизация"
       },
       "bodyMatcher": "partial"
     },
     {
-      "name": "Создание игры без данных",
+      "name": "Создание игры без токена",
       "method": "POST",
       "path": "/",
       "body": {},
-      "expectedStatus": 403,
+      "expectedStatus": 401,
       "expectedBody": {
-        "error": "string"
+        "error": "Требуется авторизация"
       },
       "bodyMatcher": "partial"
     }
