@@ -433,10 +433,11 @@ const ProfileTab = ({ currentPlayer }: ProfileTabProps) => {
               },
               {
                 points: 25000,
-                icon: '👑',
+                icon: 'https://cdn.poehali.dev/files/b0c1c821-dbb6-487a-b395-b18bd771277a_421a3740-55b0-48a5-b1e6-80723b59465f (1).png',
                 title: 'Легенда',
                 locked: displayData.points < 25000,
-                isImage: false,
+                isImage: true,
+                hasPurpleAura: true,
               },
             ].map(achievement => (
               <Card
@@ -454,6 +455,15 @@ const ProfileTab = ({ currentPlayer }: ProfileTabProps) => {
                             <div className="absolute left-2 bottom-0 w-2 h-3 bg-gradient-to-t from-red-600 via-orange-500 to-yellow-400 rounded-full blur-sm animate-flicker-3"></div>
                             <div className="absolute right-2 bottom-1 w-2 h-4 bg-gradient-to-t from-red-700 via-orange-600 to-yellow-500 rounded-full blur-sm animate-flicker-1"></div>
                             <div className="absolute inset-0 rounded-lg bg-gradient-to-t from-red-600/40 via-orange-500/30 to-transparent blur-md animate-pulse"></div>
+                          </div>
+                        )}
+                        {achievement.hasPurpleAura && !achievement.locked && (
+                          <div className="absolute -inset-2 animate-flame">
+                            <div className="absolute left-0 top-0 w-2 h-3 bg-gradient-to-t from-purple-600 via-violet-500 to-fuchsia-400 rounded-full blur-sm animate-flicker-1"></div>
+                            <div className="absolute right-0 top-1 w-2 h-4 bg-gradient-to-t from-purple-700 via-violet-600 to-fuchsia-500 rounded-full blur-sm animate-flicker-2"></div>
+                            <div className="absolute left-2 bottom-0 w-2 h-3 bg-gradient-to-t from-purple-600 via-violet-500 to-fuchsia-400 rounded-full blur-sm animate-flicker-3"></div>
+                            <div className="absolute right-2 bottom-1 w-2 h-4 bg-gradient-to-t from-purple-700 via-violet-600 to-fuchsia-500 rounded-full blur-sm animate-flicker-1"></div>
+                            <div className="absolute inset-0 rounded-lg bg-gradient-to-t from-purple-600/40 via-violet-500/30 to-transparent blur-md animate-pulse"></div>
                           </div>
                         )}
                         <img 
