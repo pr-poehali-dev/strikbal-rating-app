@@ -418,10 +418,10 @@ const ProfileTab = ({ currentPlayer }: ProfileTabProps) => {
               },
               {
                 points: 15000,
-                icon: '🐉',
+                icon: 'https://cdn.poehali.dev/files/lrs8CNxbkCujjW5HzdRFkuAMfAkG9pha7gZi8rkQ2DujpTufv5xcgCjODX99RGihUQ2J9VIFPu10j-govUVYuWgj.png',
                 title: 'Дракон',
                 locked: displayData.points < 15000,
-                isImage: false,
+                isImage: true,
               },
               {
                 points: 20000,
