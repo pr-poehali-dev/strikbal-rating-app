@@ -29,11 +29,20 @@ const ProfileTab = ({ currentPlayer }: ProfileTabProps) => {
 
     setUploading(true);
 
-    try {
-      const reader = new FileReader();
-      reader.onloadend = async () => {
+    const reader = new FileReader();
+    
+    reader.onerror = () => {
+      console.error('Ошибка чтения файла');
+      alert('Не удалось прочитать файл');
+      setUploading(false);
+    };
+    
+    reader.onloadend = async () => {
+      try {
         const base64 = reader.result as string;
         const token = localStorage.getItem('authToken');
+        
+        console.log('Отправка запроса на загрузку аватара...');
         
         const response = await fetch('https://functions.poehali.dev/6013caed-cf4a-4a7f-8f68-0cc2d40ca477', {
           method: 'POST',
@@ -47,22 +56,28 @@ const ProfileTab = ({ currentPlayer }: ProfileTabProps) => {
           }),
         });
 
-        if (!response.ok) throw new Error('Ошибка загрузки');
+        console.log('Ответ сервера:', response.status);
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Ошибка загрузки');
+        }
 
         const data = await response.json();
+        console.log('Аватар загружен:', data.avatar_url);
+        
         currentPlayer.avatar = data.avatar_url;
         setIsDialogOpen(false);
         setSelectedFile(null);
         window.location.reload();
-      };
+      } catch (error) {
+        console.error('Ошибка загрузки аватара:', error);
+        alert(`Не удалось загрузить аватар: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`);
+        setUploading(false);
+      }
+    };
 
-      reader.readAsDataURL(selectedFile);
-    } catch (error) {
-      console.error('Ошибка загрузки аватара:', error);
-      alert('Не удалось загрузить аватар');
-    } finally {
-      setUploading(false);
-    }
+    reader.readAsDataURL(selectedFile);
   };
 
   return (
