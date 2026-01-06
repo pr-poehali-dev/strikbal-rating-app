@@ -237,7 +237,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      <div className="fixed inset-0 bg-gradient-to-br from-black via-gray-900 to-orange-950 blur-3xl -z-10"></div>
+      <div className="fixed inset-0 bg-gradient-to-br from-black via-gray-900 to-orange-950 blur-3xl animate-gradient-pulse -z-10"></div>
       <div className="fixed inset-0 bg-black/40 -z-10"></div>
       <div className="container mx-auto py-6 px-4 max-w-7xl relative z-0">
         <div className="flex items-center justify-between mb-8">
