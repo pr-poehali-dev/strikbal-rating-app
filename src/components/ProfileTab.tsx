@@ -54,7 +54,7 @@ const ProfileTab = ({ currentPlayer }: ProfileTabProps) => {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
+            'X-Authorization': `Bearer ${token}`,
           },
         }
       );
