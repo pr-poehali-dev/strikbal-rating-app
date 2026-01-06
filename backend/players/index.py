@@ -30,6 +30,8 @@ def handler(event: dict, context) -> dict:
     method = event.get('httpMethod', 'GET')
     query_params = event.get('queryStringParameters', {}) or {}
     action = query_params.get('action', '')
+    
+    print(f"Request received: method={method}, action={action}")
 
     if method == 'OPTIONS':
         return {

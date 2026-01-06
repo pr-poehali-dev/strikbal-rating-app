@@ -1,7 +1,3 @@
 {
-  "games": "https://functions.poehali.dev/5d6c5d79-2e2f-4d81-9cba-09e58c1435d2",
-  "players": "https://functions.poehali.dev/6013caed-cf4a-4a7f-8f68-0cc2d40ca477",
-  "tasks": "https://functions.poehali.dev/f3163ce6-2de5-435f-989d-d7026066ddb1",
-  "register": "https://functions.poehali.dev/1e0ce899-f954-4891-8c8e-3891a88cc2b3",
-  "login": "https://functions.poehali.dev/b05d5b98-3bbb-43f8-92aa-03bc3c2e32ef"
+  "players": "https://functions.poehali.dev/6013caed-cf4a-4a7f-8f68-0cc2d40ca477"
 }
