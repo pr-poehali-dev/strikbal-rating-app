@@ -98,12 +98,59 @@ const PlayerProfileView = ({ playerId, onClose }: PlayerProfileViewProps) => {
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="flex items-start gap-6">
-          <Avatar className="w-32 h-32">
-            <AvatarImage src={profileData.avatar} />
-            <AvatarFallback className="text-3xl">
-              {profileData.name.charAt(0)}
-            </AvatarFallback>
-          </Avatar>
+          {profileData.rank === 1 ? (
+            <div className="relative">
+              <div className="absolute inset-0 -m-2 animate-flame">
+                <div className="absolute inset-0 rounded-full bg-gradient-to-t from-purple-600 via-purple-400 to-transparent opacity-80 blur-sm"></div>
+                <div className="absolute inset-0 rounded-full bg-gradient-to-t from-violet-600 via-violet-400 to-transparent opacity-60 blur-md animate-pulse"></div>
+              </div>
+              <Avatar className="w-32 h-32 relative z-10 ring-4 ring-purple-500">
+                <AvatarImage src={profileData.avatar} />
+                <AvatarFallback className="text-3xl">
+                  {profileData.name.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
+            </div>
+          ) : profileData.rank === 2 ? (
+            <div className="relative">
+              <div className="absolute -inset-3 animate-red-flame">
+                <div className="absolute left-0 top-0 w-3 h-4 bg-gradient-to-t from-red-600 via-orange-500 to-yellow-400 rounded-full blur-sm animate-flicker-1"></div>
+                <div className="absolute right-0 top-2 w-3 h-5 bg-gradient-to-t from-red-700 via-orange-600 to-yellow-500 rounded-full blur-sm animate-flicker-2"></div>
+                <div className="absolute left-3 bottom-0 w-3 h-4 bg-gradient-to-t from-red-600 via-orange-500 to-yellow-400 rounded-full blur-sm animate-flicker-3"></div>
+                <div className="absolute right-3 bottom-2 w-3 h-5 bg-gradient-to-t from-red-700 via-orange-600 to-yellow-500 rounded-full blur-sm animate-flicker-1"></div>
+                <div className="absolute inset-0 rounded-full bg-gradient-to-t from-red-600/60 via-orange-500/40 to-transparent blur-md"></div>
+              </div>
+              <Avatar className="w-32 h-32 relative z-10 ring-4 ring-red-500">
+                <AvatarImage src={profileData.avatar} />
+                <AvatarFallback className="text-3xl">
+                  {profileData.name.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
+            </div>
+          ) : profileData.rank === 3 ? (
+            <div className="relative">
+              <div className="absolute -inset-3 animate-bronze-flame">
+                <div className="absolute inset-0 rounded-full bg-gradient-to-t from-amber-700 via-amber-500 to-yellow-300 opacity-60 blur-md animate-bronze-glow"></div>
+                <div className="absolute left-2 top-0 w-2.5 h-3 bg-gradient-to-t from-amber-800 via-amber-500 to-yellow-200 rounded-full blur-sm animate-bronze-flicker-1"></div>
+                <div className="absolute right-2 top-2 w-2.5 h-4 bg-gradient-to-t from-amber-900 via-amber-600 to-yellow-300 rounded-full blur-sm animate-bronze-flicker-2"></div>
+                <div className="absolute bottom-0 left-0 w-2.5 h-3 bg-gradient-to-t from-amber-800 via-amber-500 to-yellow-200 rounded-full blur-sm animate-bronze-flicker-3"></div>
+                <div className="absolute bottom-2 right-0 w-2.5 h-4 bg-gradient-to-t from-amber-900 via-amber-600 to-yellow-300 rounded-full blur-sm animate-bronze-flicker-1"></div>
+              </div>
+              <Avatar className="w-32 h-32 relative z-10 ring-4 ring-amber-600">
+                <AvatarImage src={profileData.avatar} />
+                <AvatarFallback className="text-3xl">
+                  {profileData.name.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
+            </div>
+          ) : (
+            <Avatar className="w-32 h-32">
+              <AvatarImage src={profileData.avatar} />
+              <AvatarFallback className="text-3xl">
+                {profileData.name.charAt(0)}
+              </AvatarFallback>
+            </Avatar>
+          )}
 
           <div className="flex-1 space-y-4">
             <div>
