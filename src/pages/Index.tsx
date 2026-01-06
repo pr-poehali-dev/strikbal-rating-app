@@ -17,7 +17,7 @@ const Index = () => {
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [activeTab, setActiveTab] = useState('leaderboard');
-  const [players, setPlayers] = useState<Player[]>(mockPlayers);
+  const [players, setPlayers] = useState<Player[]>([]);
   const [games, setGames] = useState<Game[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [currentPlayer, setCurrentPlayer] = useState<Player | null>(null);
@@ -49,8 +49,31 @@ const Index = () => {
           losses: parsedUser.player.losses,
         });
       }
+      loadPlayers(token);
     }
   }, []);
+
+  const loadPlayers = async (token: string) => {
+    try {
+      const response = await fetch('https://functions.poehali.dev/6013caed-cf4a-4a7f-8f68-0cc2d40ca477', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await response.json();
+      if (response.ok && data.players) {
+        const formattedPlayers: Player[] = data.players.map((p: any) => ({
+          id: p.id.toString(),
+          name: p.name,
+          avatar: p.avatar || '',
+          points: p.points,
+          wins: p.wins,
+          losses: p.losses,
+        }));
+        setPlayers(formattedPlayers);
+      }
+    } catch (error) {
+      console.error('Ошибка загрузки игроков:', error);
+    }
+  };
 
   const handleLogin = (token: string, user: any) => {
     setAuthToken(token);
@@ -67,6 +90,7 @@ const Index = () => {
         losses: user.player.losses,
       });
     }
+    loadPlayers(token);
   };
 
   const handleLogout = () => {
